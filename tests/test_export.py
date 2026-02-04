@@ -216,3 +216,26 @@ class TestExportSecrets:
         content = output.read_text()
         assert content.startswith("EXISTING=value\n")
         assert 'NEW_KEY="new-value"' in content
+
+    @patch("vaultuner.export.get_client")
+    @patch("vaultuner.export.get_settings")
+    def test_escapes_quotes_in_values(self, mock_settings, mock_client, tmp_path):
+        """Values with double quotes must be escaped in .env output."""
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secret = MagicMock(id="1", key="myproject/quoted-val")
+
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=[secret]))
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(value='value with "quotes" inside')
+        )
+        mock_client.return_value = client
+
+        output = tmp_path / ".env"
+        added, skipped = export_secrets("myproject", output)
+
+        assert added == 1
+        content = output.read_text()
+        # Quotes should be escaped so the .env file is valid
+        assert r'QUOTED_VAL="value with \"quotes\" inside"' in content

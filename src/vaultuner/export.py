@@ -81,7 +81,8 @@ def export_secrets(
 
     for path, value in matching_secrets:
         env_var = secret_name_to_env_var(path.name)
-        env_line = f'{env_var}="{value}"'
+        escaped_value = value.replace("\\", "\\\\").replace('"', '\\"')
+        env_line = f'{env_var}="{escaped_value}"'
 
         if env_var in existing_vars:
             lines_to_append.append(f"# Already defined above, from {path}:")

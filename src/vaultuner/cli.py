@@ -78,8 +78,8 @@ def config_show():
     table.add_column("Setting", style="cyan")
     table.add_column("Status")
 
-    access_token = get_keyring_value("access_token")
-    org_id = get_keyring_value("organization_id")
+    access_token = get_keyring_value(KEYRING_MAP["access-token"])
+    org_id = get_keyring_value(KEYRING_MAP["organization-id"])
 
     table.add_row(
         "access-token",
@@ -87,7 +87,7 @@ def config_show():
     )
     table.add_row(
         "organization-id",
-        f"[green]{org_id}[/green]" if org_id else "[red]not set[/red]",
+        "[green]configured[/green]" if org_id else "[red]not set[/red]",
     )
     console.print(table)
 
@@ -400,9 +400,7 @@ def import_env(
             continue
 
         if not yes:
-            console.print(
-                f"\n[cyan]{var_name}[/cyan] = [dim]{value[:20]}{'...' if len(value) > 20 else ''}[/dim]"
-            )
+            console.print(f"\n[cyan]{var_name}[/cyan] [dim]({len(value)} chars)[/dim]")
             console.print(f"  → [green]{secret_path}[/green]")
             if not typer.confirm("Store this secret?", default=True):
                 skipped_count += 1

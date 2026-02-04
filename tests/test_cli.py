@@ -60,7 +60,7 @@ class TestConfigShow:
     @patch("vaultuner.cli.get_keyring_value")
     def test_shows_configured(self, mock_get):
         mock_get.side_effect = (
-            lambda key: "value" if key == "access_token" else "org-123"
+            lambda key: "value" if key == "bws_access_token" else "org-123"
         )
         result = runner.invoke(app, ["config", "show"])
         assert result.exit_code == 0
@@ -72,6 +72,24 @@ class TestConfigShow:
         result = runner.invoke(app, ["config", "show"])
         assert result.exit_code == 0
         assert "not set" in result.stdout
+
+    @patch("vaultuner.cli.get_keyring_value")
+    def test_uses_correct_keyring_keys(self, mock_get):
+        """Verify config show uses the same keyring keys as config set."""
+        mock_get.return_value = None
+        runner.invoke(app, ["config", "show"])
+        # Should use keys from KEYRING_MAP (bws_access_token, bws_organization_id)
+        called_keys = [call.args[0] for call in mock_get.call_args_list]
+        assert "bws_access_token" in called_keys
+        assert "bws_organization_id" in called_keys
+
+    @patch("vaultuner.cli.get_keyring_value")
+    def test_hides_org_id_value(self, mock_get):
+        """Org ID should show 'configured' not the actual value."""
+        mock_get.return_value = "some-org-uuid-12345"
+        result = runner.invoke(app, ["config", "show"])
+        assert "some-org-uuid-12345" not in result.stdout
+        assert "configured" in result.stdout
 
 
 class TestConfigDelete:
@@ -332,3 +350,35 @@ class TestExportCommand:
         result = runner.invoke(app, ["export", "-p", "myproject"])
         assert result.exit_code == 0
         assert "No secrets found" in result.output
+
+
+class TestImportCommand:
+    @patch("vaultuner.cli.get_or_create_project")
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_preview_shows_length_not_value(
+        self, mock_settings, mock_client, mock_find, mock_project, tmp_path
+    ):
+        """Import preview should not leak partial secret values."""
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = None
+        mock_project.return_value = "project-id"
+        client = MagicMock()
+        client.secrets().create.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("MY_SECRET=supersecretvalue12345\n")
+
+        # Run with prompting (no -y flag) and answer "n" to abort
+        result = runner.invoke(
+            app,
+            ["import", "-i", str(env_file), "-p", "testproj"],
+            input="n\n",
+        )
+
+        # Value should NOT appear in output
+        assert "supersecret" not in result.output
+        # Length info should appear instead (value is 21 chars)
+        assert "21 chars" in result.output
