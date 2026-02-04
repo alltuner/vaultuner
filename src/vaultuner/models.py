@@ -30,6 +30,12 @@ class SecretPath(BaseModel):
     def parse(cls, path: str) -> "SecretPath":
         """Parse a path like 'project/env/name' or 'project/name'."""
         parts = path.split("/")
+
+        if any(not part for part in parts):
+            raise ValueError(
+                f"Invalid path format: {path}. Path segments cannot be empty."
+            )
+
         if len(parts) == 3:
             return cls(project=parts[0], env=parts[1], name=parts[2])
         elif len(parts) == 2:

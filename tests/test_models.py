@@ -31,6 +31,22 @@ class TestSecretPathParse:
         with pytest.raises(ValueError, match="Invalid path format"):
             SecretPath.parse("")
 
+    def test_parse_double_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project//name")
+
+    def test_parse_leading_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("/project/name")
+
+    def test_parse_trailing_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project/name/")
+
+    def test_parse_empty_env_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project//env/name")
+
     def test_parse_with_special_characters(self):
         path = SecretPath.parse("my_project/dev/api-key_v2")
         assert path.project == "my_project"
