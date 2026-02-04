@@ -1,6 +1,7 @@
 # ABOUTME: Typer CLI for Bitwarden Secrets Manager.
 # ABOUTME: Commands for listing, getting, setting, and deleting secrets.
 
+from pathlib import Path
 from typing import Literal
 
 import typer
@@ -8,7 +9,12 @@ from rich.console import Console
 from rich.table import Table
 
 from vaultuner.client import find_secret_by_key, get_client, get_or_create_project
-from vaultuner.config import delete_keyring_value, get_keyring_value, get_settings, set_keyring_value
+from vaultuner.config import (
+    delete_keyring_value,
+    get_keyring_value,
+    get_settings,
+    set_keyring_value,
+)
 from vaultuner.models import SecretPath
 
 DELETED_PREFIX = "_deleted_/"
@@ -87,7 +93,9 @@ def config_delete(
 
 @app.command("list")
 def list_secrets(
-    project: str | None = typer.Option(None, "--project", "-p", help="Filter by project"),
+    project: str | None = typer.Option(
+        None, "--project", "-p", help="Filter by project"
+    ),
     env: str | None = typer.Option(None, "--env", "-e", help="Filter by environment"),
     deleted: bool = typer.Option(False, "--deleted", "-d", help="Show deleted secrets"),
 ):
@@ -142,7 +150,9 @@ def list_secrets(
 @app.command()
 def get(
     path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
-    value_only: bool = typer.Option(False, "--value", "-v", help="Print only the value"),
+    value_only: bool = typer.Option(
+        False, "--value", "-v", help="Print only the value"
+    ),
 ):
     """Get a secret by path."""
     client = get_client()
@@ -239,7 +249,9 @@ def delete(
             raise typer.Exit(1)
 
         deleted_key = mark_deleted(path)
-        project_ids = [str(response.data.project_id)] if response.data.project_id else None
+        project_ids = (
+            [str(response.data.project_id)] if response.data.project_id else None
+        )
         client.secrets().update(
             organization_id=settings.organization_id,
             id=secret_info["id"],
@@ -300,9 +312,28 @@ def projects():
     console.print(table)
 
 
-def main():
-    app()
+@app.command()
+def export(
+    project: str | None = typer.Option(
+        None,
+        "--project",
+        "-p",
+        help="Project name (defaults to current directory name)",
+    ),
+    env: str | None = typer.Option(None, "--env", "-e", help="Filter by environment"),
+    output: Path = typer.Option(
+        Path(".env"), "--output", "-o", help="Output file path (default: .env)"
+    ),
+):
+    """Export project secrets to a .env file."""
+    from vaultuner.export import export_secrets
 
+    project_name = project or Path.cwd().name
+    added_count, skipped_count = export_secrets(project_name, output, env)
 
-if __name__ == "__main__":
-    main()
+    if added_count == 0 and skipped_count == 0:
+        console.print(f"[dim]No secrets found for project '{project_name}'.[/dim]")
+    else:
+        console.print(
+            f"[green]Exported to {output}:[/green] {added_count} added, {skipped_count} already present"
+        )

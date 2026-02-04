@@ -35,7 +35,14 @@ class Settings(BaseSettings):
     identity_url: str = "https://vault.bitwarden.com/identity"
 
     @classmethod
-    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+    ):
         """Load from keychain first, then fall back to env vars."""
         return (
             init_settings,

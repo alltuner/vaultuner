@@ -18,7 +18,9 @@ class SecretPath(BaseModel):
         elif len(parts) == 2:
             return cls(project=parts[0], name=parts[1])
         else:
-            raise ValueError(f"Invalid path format: {path}. Expected PROJECT/[ENV/]NAME")
+            raise ValueError(
+                f"Invalid path format: {path}. Expected PROJECT/[ENV/]NAME"
+            )
 
     def to_key(self) -> str:
         """Convert to Bitwarden secret key format."""

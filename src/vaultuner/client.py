@@ -23,7 +23,9 @@ def get_client() -> BitwardenClient:
         )
     )
     state_path = Path(tempfile.gettempdir()) / "vaultuner_state.json"
-    client.auth().login_access_token(settings.access_token.get_secret_value(), str(state_path))
+    client.auth().login_access_token(
+        settings.access_token.get_secret_value(), str(state_path)
+    )
     return client
 
 
