@@ -1,6 +1,6 @@
 [project]
 name = "vaultuner"
-version = "0.1.6"
+version = "0.1.7"
 description = "Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming"
 readme = "README.md"
 license = { text = "MIT" }
