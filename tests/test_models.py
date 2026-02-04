@@ -56,3 +56,45 @@ class TestSecretPathStr:
     def test_str_without_env(self):
         path = SecretPath(project="proj", env=None, name="key")
         assert str(path) == "proj/key"
+
+
+class TestDeletedHelpers:
+    def test_is_deleted_with_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("_deleted_/project/name") is True
+
+    def test_is_deleted_without_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("project/name") is False
+
+    def test_is_deleted_incomplete_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("_deleted_") is False
+
+    def test_is_deleted_prefix_not_at_start(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("project/_deleted_/name") is False
+
+    def test_mark_deleted(self):
+        from vaultuner.models import mark_deleted
+
+        assert mark_deleted("project/name") == "_deleted_/project/name"
+
+    def test_unmark_deleted(self):
+        from vaultuner.models import unmark_deleted
+
+        assert unmark_deleted("_deleted_/project/name") == "project/name"
+
+    def test_unmark_deleted_without_prefix(self):
+        from vaultuner.models import unmark_deleted
+
+        assert unmark_deleted("project/name") == "project/name"
+
+    def test_deleted_prefix_constant(self):
+        from vaultuner.models import DELETED_PREFIX
+
+        assert DELETED_PREFIX == "_deleted_/"

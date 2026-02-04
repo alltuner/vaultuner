@@ -6,10 +6,10 @@ from unittest.mock import MagicMock, patch
 
 from vaultuner.export import (
     export_secrets,
-    is_deleted,
     parse_env_file,
     secret_name_to_env_var,
 )
+from vaultuner.models import is_deleted
 
 
 class TestSecretNameToEnvVar:

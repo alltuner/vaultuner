@@ -17,9 +17,12 @@ from vaultuner.config import (
     get_settings,
     set_keyring_value,
 )
-from vaultuner.models import SecretPath
-
-DELETED_PREFIX = "_deleted_/"
+from vaultuner.models import (
+    SecretPath,
+    is_deleted,
+    mark_deleted,
+    unmark_deleted,
+)
 
 __version__ = version("vaultuner")
 
@@ -49,19 +52,6 @@ def main(
 
 console = Console()
 err_console = Console(stderr=True)
-
-
-def is_deleted(key: str) -> bool:
-    return key.startswith(DELETED_PREFIX)
-
-
-def mark_deleted(key: str) -> str:
-    return f"{DELETED_PREFIX}{key}"
-
-
-def unmark_deleted(key: str) -> str:
-    return key.removeprefix(DELETED_PREFIX)
-
 
 ConfigKey = Literal["access-token", "organization-id"]
 KEYRING_MAP = {

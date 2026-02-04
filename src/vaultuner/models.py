@@ -3,6 +3,23 @@
 
 from pydantic import BaseModel
 
+DELETED_PREFIX = "_deleted_/"
+
+
+def is_deleted(key: str) -> bool:
+    """Check if a secret key is marked as deleted."""
+    return key.startswith(DELETED_PREFIX)
+
+
+def mark_deleted(key: str) -> str:
+    """Mark a secret key as deleted by adding the prefix."""
+    return f"{DELETED_PREFIX}{key}"
+
+
+def unmark_deleted(key: str) -> str:
+    """Remove the deleted prefix from a secret key."""
+    return key.removeprefix(DELETED_PREFIX)
+
 
 class SecretPath(BaseModel):
     project: str
