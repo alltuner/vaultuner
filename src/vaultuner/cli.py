@@ -337,3 +337,79 @@ def export(
         console.print(
             f"[green]Exported to {output}:[/green] {added_count} added, {skipped_count} already present"
         )
+
+
+@app.command("import")
+def import_env(
+    project: str | None = typer.Option(
+        None,
+        "--project",
+        "-p",
+        help="Project name (defaults to current directory name)",
+    ),
+    env: str | None = typer.Option(None, "--env", "-e", help="Environment for secrets"),
+    input_file: Path = typer.Option(
+        Path(".env"), "--input", "-i", help="Input file path (default: .env)"
+    ),
+    yes: bool = typer.Option(False, "--yes", "-y", help="Import all without prompting"),
+):
+    """Import secrets from a .env file to the secret store."""
+    from vaultuner.import_env import (
+        build_secret_path,
+        env_var_to_secret_name,
+        parse_env_entries,
+    )
+
+    if not input_file.exists():
+        err_console.print(f"[red]File not found:[/red] {input_file}")
+        raise typer.Exit(1)
+
+    project_name = project or Path.cwd().name
+    entries = parse_env_entries(input_file)
+
+    if not entries:
+        console.print(f"[dim]No entries found in {input_file}.[/dim]")
+        return
+
+    settings = get_settings()
+    client = get_client()
+    project_id = get_or_create_project(client, project_name)
+
+    created_count = 0
+    skipped_count = 0
+
+    for var_name, value in entries:
+        secret_name = env_var_to_secret_name(var_name)
+        secret_path = build_secret_path(project_name, env, secret_name)
+
+        # Check if secret already exists
+        existing = find_secret_by_key(client, secret_path)
+        if existing:
+            console.print(f"[dim]Already exists:[/dim] {secret_path}")
+            skipped_count += 1
+            continue
+
+        if not yes:
+            console.print(
+                f"\n[cyan]{var_name}[/cyan] = [dim]{value[:20]}{'...' if len(value) > 20 else ''}[/dim]"
+            )
+            console.print(f"  → [green]{secret_path}[/green]")
+            if not typer.confirm("Store this secret?", default=True):
+                skipped_count += 1
+                continue
+
+        response = client.secrets().create(
+            organization_id=settings.organization_id,
+            key=secret_path,
+            value=value,
+            note=None,
+            project_ids=[project_id],
+        )
+        if response.data:
+            created_count += 1
+            if yes:
+                console.print(f"[green]Created:[/green] {secret_path}")
+
+    console.print(
+        f"\n[green]Import complete:[/green] {created_count} created, {skipped_count} skipped"
+    )

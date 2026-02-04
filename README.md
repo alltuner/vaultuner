@@ -70,6 +70,18 @@ vaultuner export -p myproject -e prod  # filter by environment
 vaultuner export -o secrets.env     # custom output file
 ```
 
+### Import from .env file
+
+```bash
+vaultuner import                    # interactive import from .env
+vaultuner import -p myproject       # specify project
+vaultuner import -e prod            # import to specific environment
+vaultuner import -i secrets.env     # custom input file
+vaultuner import -y                 # import all without prompting
+```
+
+Existing secrets are skipped automatically.
+
 ### List projects
 
 ```bash
