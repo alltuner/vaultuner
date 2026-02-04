@@ -10,20 +10,29 @@ from vaultuner.import_env import (
 
 
 class TestEnvVarToSecretName:
-    def test_keeps_name_unchanged(self):
-        assert env_var_to_secret_name("API_KEY") == "API_KEY"
+    def test_converts_uppercase_to_lowercase(self):
+        assert env_var_to_secret_name("API_KEY") == "api-key"
 
-    def test_preserves_case(self):
-        assert env_var_to_secret_name("DB_PASSWORD") == "DB_PASSWORD"
+    def test_replaces_underscores_with_dashes(self):
+        assert env_var_to_secret_name("DB_PASSWORD") == "db-password"
 
-    def test_lowercase_unchanged(self):
+    def test_lowercase_stays_lowercase(self):
         assert env_var_to_secret_name("secret") == "secret"
 
-    def test_mixed_case_unchanged(self):
-        assert env_var_to_secret_name("My_Api_Key") == "My_Api_Key"
+    def test_mixed_case_to_lowercase(self):
+        assert env_var_to_secret_name("My_Api_Key") == "my-api-key"
 
     def test_empty_string(self):
         assert env_var_to_secret_name("") == ""
+
+    def test_is_inverse_of_export(self):
+        """Round-trip: export(import(name)) == name"""
+        from vaultuner.export import secret_name_to_env_var
+
+        original = "api-key"
+        env_var = secret_name_to_env_var(original)
+        back = env_var_to_secret_name(env_var)
+        assert back == original
 
 
 class TestParseEnvEntries:

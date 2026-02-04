@@ -5,8 +5,11 @@ from pathlib import Path
 
 
 def env_var_to_secret_name(var_name: str) -> str:
-    """Convert an environment variable name to a secret name."""
-    return var_name
+    """Convert an environment variable name to a secret name.
+
+    This is the inverse of secret_name_to_env_var() from export.py.
+    """
+    return var_name.lower().replace("_", "-")
 
 
 def parse_env_entries(path: Path) -> list[tuple[str, str]]:
