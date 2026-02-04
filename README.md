@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/github/v/release/alltuner/vaultuner)](https://github.com/alltuner/vaultuner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11-3.12](https://img.shields.io/badge/python-3.11--3.12-blue.svg)](https://www.python.org/downloads/)
 
 **A developer-friendly CLI for Bitwarden Secrets Manager** with intuitive `PROJECT/[ENV/]SECRET` naming.
 
@@ -22,7 +22,7 @@ Stop managing cryptic secret IDs. Vaultuner organizes your secrets the way you t
 ### Installation
 
 ```bash
-uv tool install git+https://github.com/alltuner/vaultuner --python 3.12
+uv tool install git+https://github.com/alltuner/vaultuner
 ```
 
 ### Configuration
@@ -80,7 +80,7 @@ myapp/dev/db-password      # Different value per environment
 
 ## Requirements
 
-- Python 3.12
+- Python 3.11 or 3.12 (bitwarden-sdk does not provide macOS wheels for other versions)
 - macOS (for Keychain support)
 - Bitwarden Secrets Manager account
 
