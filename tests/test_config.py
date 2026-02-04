@@ -1,9 +1,8 @@
 # ABOUTME: Tests for the config module.
 # ABOUTME: Tests keyring operations and settings loading.
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 from vaultuner.config import (
     SERVICE_NAME,

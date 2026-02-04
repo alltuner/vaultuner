@@ -1,10 +1,8 @@
 # ABOUTME: Tests for the export module.
 # ABOUTME: Tests env file parsing, variable naming, and secret export.
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from vaultuner.export import (
     export_secrets,
@@ -182,12 +180,8 @@ class TestExportSecrets:
         secret = MagicMock(id="1", key="myproject/api-key")
 
         client = MagicMock()
-        client.secrets().list.return_value = MagicMock(
-            data=MagicMock(data=[secret])
-        )
-        client.secrets().get.return_value = MagicMock(
-            data=MagicMock(value="new-value")
-        )
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=[secret]))
+        client.secrets().get.return_value = MagicMock(data=MagicMock(value="new-value"))
         mock_client.return_value = client
 
         output = tmp_path / ".env"
@@ -209,12 +203,8 @@ class TestExportSecrets:
         secret = MagicMock(id="1", key="myproject/new-key")
 
         client = MagicMock()
-        client.secrets().list.return_value = MagicMock(
-            data=MagicMock(data=[secret])
-        )
-        client.secrets().get.return_value = MagicMock(
-            data=MagicMock(value="new-value")
-        )
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=[secret]))
+        client.secrets().get.return_value = MagicMock(data=MagicMock(value="new-value"))
         mock_client.return_value = client
 
         output = tmp_path / ".env"

@@ -3,7 +3,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 from typer.testing import CliRunner
 
 from vaultuner.cli import (
@@ -29,7 +28,9 @@ class TestMarkDeleted:
         assert mark_deleted("project/name") == "_deleted_/project/name"
 
     def test_already_deleted(self):
-        assert mark_deleted("_deleted_/project/name") == "_deleted_/_deleted_/project/name"
+        assert (
+            mark_deleted("_deleted_/project/name") == "_deleted_/_deleted_/project/name"
+        )
 
 
 class TestUnmarkDeleted:
@@ -58,7 +59,9 @@ class TestConfigSet:
 class TestConfigShow:
     @patch("vaultuner.cli.get_keyring_value")
     def test_shows_configured(self, mock_get):
-        mock_get.side_effect = lambda key: "value" if key == "access_token" else "org-123"
+        mock_get.side_effect = (
+            lambda key: "value" if key == "access_token" else "org-123"
+        )
         result = runner.invoke(app, ["config", "show"])
         assert result.exit_code == 0
         assert "configured" in result.stdout
@@ -88,9 +91,7 @@ class TestListSecrets:
 
         secret = MagicMock(key="myproject/prod/api-key")
         client = MagicMock()
-        client.secrets().list.return_value = MagicMock(
-            data=MagicMock(data=[secret])
-        )
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=[secret]))
         mock_client.return_value = client
 
         result = runner.invoke(app, ["list"])
@@ -230,7 +231,9 @@ class TestDeleteSecret:
         client = MagicMock()
         mock_client.return_value = client
 
-        result = runner.invoke(app, ["delete", "myproject/api-key", "--force", "--permanent"])
+        result = runner.invoke(
+            app, ["delete", "myproject/api-key", "--force", "--permanent"]
+        )
         assert result.exit_code == 0
         assert "Permanently deleted" in result.stdout
         client.secrets().delete.assert_called_once()
@@ -254,7 +257,10 @@ class TestRestoreSecret:
     @patch("vaultuner.cli.get_settings")
     def test_restores(self, mock_settings, mock_client, mock_find):
         mock_settings.return_value = MagicMock(organization_id="org-123")
-        mock_find.return_value = {"id": "secret-id", "key": "_deleted_/myproject/api-key"}
+        mock_find.return_value = {
+            "id": "secret-id",
+            "key": "_deleted_/myproject/api-key",
+        }
         client = MagicMock()
         client.secrets().get.return_value = MagicMock(
             data=MagicMock(value="value", note=None, project_id="proj-id")
@@ -287,9 +293,7 @@ class TestProjects:
         project = MagicMock()
         project.name = "myproject"
         client = MagicMock()
-        client.projects().list.return_value = MagicMock(
-            data=MagicMock(data=[project])
-        )
+        client.projects().list.return_value = MagicMock(data=MagicMock(data=[project]))
         mock_client.return_value = client
 
         result = runner.invoke(app, ["projects"])
@@ -314,7 +318,9 @@ class TestExportCommand:
     def test_exports(self, mock_export, tmp_path):
         mock_export.return_value = (3, 1)
 
-        result = runner.invoke(app, ["export", "-p", "myproject", "-o", str(tmp_path / ".env")])
+        result = runner.invoke(
+            app, ["export", "-p", "myproject", "-o", str(tmp_path / ".env")]
+        )
         assert result.exit_code == 0
         assert "3 added" in result.output
         assert "1 already present" in result.output

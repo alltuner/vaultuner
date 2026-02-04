@@ -10,7 +10,9 @@ class TestGetClient:
     @patch("vaultuner.client.BitwardenClient")
     @patch("vaultuner.client.client_settings_from_dict")
     @patch("vaultuner.client.get_settings")
-    def test_creates_authenticated_client(self, mock_settings, mock_client_settings, mock_client_class):
+    def test_creates_authenticated_client(
+        self, mock_settings, mock_client_settings, mock_client_class
+    ):
         from vaultuner.client import get_client
 
         settings = MagicMock()
@@ -40,9 +42,7 @@ class TestGetOrCreateProject:
         project.name = "myproject"
 
         client = MagicMock()
-        client.projects().list.return_value = MagicMock(
-            data=MagicMock(data=[project])
-        )
+        client.projects().list.return_value = MagicMock(data=MagicMock(data=[project]))
 
         result = get_or_create_project(client, "myproject")
         assert result == "project-id-123"
@@ -91,9 +91,7 @@ class TestFindSecretByKey:
         secret.key = "myproject/api-key"
 
         client = MagicMock()
-        client.secrets().list.return_value = MagicMock(
-            data=MagicMock(data=[secret])
-        )
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=[secret]))
 
         result = find_secret_by_key(client, "myproject/api-key")
         assert result == {"id": "secret-id-123", "key": "myproject/api-key"}
