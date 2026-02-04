@@ -1,8 +1,9 @@
 # ABOUTME: Typer CLI for Bitwarden Secrets Manager.
 # ABOUTME: Commands for listing, getting, setting, and deleting secrets.
 
+from importlib.metadata import version
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 import typer
 from rich.console import Console
@@ -19,12 +20,31 @@ from vaultuner.models import SecretPath
 
 DELETED_PREFIX = "_deleted_/"
 
+__version__ = version("vaultuner")
+
+
+def version_callback(value: bool) -> None:
+    if value:
+        print(f"vaultuner {__version__}")
+        raise typer.Exit()
+
+
 app = typer.Typer(
-    help="Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming.",
+    help=f"Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming. (v{__version__})",
     no_args_is_help=True,
 )
 config_app = typer.Typer(help="Manage vaultuner credentials stored in system keychain.")
 app.add_typer(config_app, name="config")
+
+
+@app.callback()
+def main(
+    version: Annotated[
+        bool, typer.Option("--version", "-V", callback=version_callback, is_eager=True)
+    ] = False,
+) -> None:
+    """Bitwarden Secrets Manager CLI."""
+
 
 console = Console()
 err_console = Console(stderr=True)
