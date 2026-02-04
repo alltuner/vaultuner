@@ -115,3 +115,7 @@ Full docs at [alltuner.github.io/vaultuner](https://alltuner.github.io/vaultuner
 ## License
 
 MIT
+
+---
+
+Built at [All Tuner Labs](https://alltuner.com) by [David Poblador i Garcia](https://davidpoblador.com)

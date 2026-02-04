@@ -80,3 +80,7 @@ vaultuner export -p myapp -e prod -o .env.production
 1. [Install vaultuner](getting-started/installation.md)
 2. [Configure your credentials](getting-started/configuration.md)
 3. [Try the quick start guide](getting-started/quickstart.md)
+
+---
+
+Built at [All Tuner Labs](https://alltuner.com) by [David Poblador i Garcia](https://davidpoblador.com)
