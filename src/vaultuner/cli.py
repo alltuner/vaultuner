@@ -11,6 +11,7 @@ from rich.table import Table
 
 from vaultuner.client import find_secret_by_key, get_client, get_or_create_project
 from vaultuner.config import (
+    DEFAULT_PROJECT_NAME,
     delete_keyring_value,
     get_keyring_value,
     get_settings,
@@ -207,7 +208,6 @@ def set(
 ):
     """Create or update a secret."""
     settings = get_settings()
-    secret_path = SecretPath.parse(path)
     client = get_client()
 
     existing = find_secret_by_key(client, path)
@@ -225,7 +225,7 @@ def set(
             raise typer.Exit(1)
         console.print(f"[yellow]Updated:[/yellow] {path}")
     else:
-        project_id = get_or_create_project(client, secret_path.project)
+        project_id = get_or_create_project(client, DEFAULT_PROJECT_NAME)
         response = client.secrets().create(
             organization_id=settings.organization_id,
             key=path,
@@ -426,7 +426,7 @@ def import_env(
 
     # Phase 2: Import all approved secrets
     console.print(f"\n[cyan]Importing {len(to_import)} secrets...[/cyan]")
-    project_id = get_or_create_project(client, project_name)
+    project_id = get_or_create_project(client, DEFAULT_PROJECT_NAME)
     created_count = 0
 
     for secret_path, value in to_import:

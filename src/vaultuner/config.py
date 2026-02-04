@@ -6,6 +6,7 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 SERVICE_NAME = "vaultuner"
+DEFAULT_PROJECT_NAME = "vaultuner"
 
 
 def get_keyring_value(key: str) -> str | None:
