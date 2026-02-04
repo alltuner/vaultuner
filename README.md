@@ -112,7 +112,7 @@ myapp/dev/db-password    # Development only
 
 ## Documentation
 
-Full docs at [alltuner.github.io/vaultuner](https://alltuner.github.io/vaultuner)
+Full docs at [vaultuner.alltuner.com](https://vaultuner.alltuner.com)
 
 ## License
 
