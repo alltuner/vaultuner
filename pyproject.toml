@@ -18,9 +18,11 @@ vaultuner = "vaultuner.cli:app"
 
 [dependency-groups]
 dev = [
+    "prek>=0.1.0",
     "pytest>=8.0.0",
 ]
 
 [build-system]
 requires = ["uv_build>=0.9.29,<0.10.0"]
 build-backend = "uv_build"
+
