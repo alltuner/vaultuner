@@ -1,11 +1,20 @@
 [project]
 name = "vaultuner"
 version = "0.1.0"
-description = "Add your description here"
+description = "Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "bitwarden-sdk>=1.0.0",
+    "pydantic>=2.12.5",
     "pydantic-settings>=2.12.0",
+    "rich>=14.3.2",
     "typer>=0.21.1",
 ]
+
+[project.scripts]
+vaultuner = "vaultuner.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9.29,<0.10.0"]
+build-backend = "uv_build"

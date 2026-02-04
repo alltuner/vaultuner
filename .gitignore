@@ -6,6 +6,10 @@ dist/
 wheels/
 *.egg-info
 
+# Editor files
+*.swp
+*.swo
+
 # Virtual environments
 .venv
 
