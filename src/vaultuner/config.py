@@ -1,6 +1,8 @@
 # ABOUTME: Configuration settings for Bitwarden Secrets Manager.
 # ABOUTME: Loads credentials from keychain (preferred) or environment variables.
 
+import sys
+
 import keyring
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -9,18 +11,31 @@ SERVICE_NAME = "vaultuner"
 DEFAULT_PROJECT_NAME = "vaultuner"
 
 
+def _require_darwin() -> None:
+    """Ensure we're running on macOS where keyring is supported."""
+    if sys.platform != "darwin":
+        raise SystemExit(
+            "Keyring storage is only supported on macOS. "
+            "Use environment variables BWS_ACCESS_TOKEN and BWS_ORGANIZATION_ID instead."
+        )
+
+
 def get_keyring_value(key: str) -> str | None:
-    """Get a value from the system keychain."""
+    """Get a value from the system keychain. Returns None on non-darwin."""
+    if sys.platform != "darwin":
+        return None
     return keyring.get_password(SERVICE_NAME, key)
 
 
 def set_keyring_value(key: str, value: str) -> None:
     """Store a value in the system keychain."""
+    _require_darwin()
     keyring.set_password(SERVICE_NAME, key, value)
 
 
 def delete_keyring_value(key: str) -> None:
     """Delete a value from the system keychain."""
+    _require_darwin()
     try:
         keyring.delete_password(SERVICE_NAME, key)
     except keyring.errors.PasswordDeleteError:
