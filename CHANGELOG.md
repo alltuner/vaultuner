@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.4](https://github.com/alltuner/vaultuner/compare/v0.1.3...v0.1.4) (2026-02-04)
+
+
+### Bug Fixes
+
+* check for darwin before using keyring ([#14](https://github.com/alltuner/vaultuner/issues/14)) ([56d79a4](https://github.com/alltuner/vaultuner/commit/56d79a48fa35b86ecb5cd91c7f60e52152881ec7))
+
+
+### Miscellaneous Chores
+
+* bump dev dependencies ([#17](https://github.com/alltuner/vaultuner/issues/17)) ([1eeae06](https://github.com/alltuner/vaultuner/commit/1eeae069f26e6ab59b7278b8345e32498bb6b5f8))
+* **deps:** update actions/checkout action to v6 ([#19](https://github.com/alltuner/vaultuner/issues/19)) ([89b5987](https://github.com/alltuner/vaultuner/commit/89b598732c2a355ace9953f506974ab75bb054dd))
+
+
+### Documentation Updates
+
+* prepare for release with license, readme, and mkdocs ([#16](https://github.com/alltuner/vaultuner/issues/16)) ([bed5d27](https://github.com/alltuner/vaultuner/commit/bed5d27b9e58251a7ab133117098b0f246d1f751))
+
 ## [0.1.3](https://github.com/alltuner/vaultuner/compare/v0.1.2...v0.1.3) (2026-02-04)
 
 
