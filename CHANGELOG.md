@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/alltuner/vaultuner/compare/v0.1.5...v0.1.6) (2026-02-04)
+
+
+### Bug Fixes
+
+* trigger PyPI publish from release-please outputs ([#26](https://github.com/alltuner/vaultuner/issues/26)) ([9ce8d5c](https://github.com/alltuner/vaultuner/commit/9ce8d5c8cb6a37aab1b5ad7155006ac408f8caf6))
+
 ## [0.1.5](https://github.com/alltuner/vaultuner/compare/v0.1.4...v0.1.5) (2026-02-04)
 
 
