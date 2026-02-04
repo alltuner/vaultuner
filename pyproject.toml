@@ -30,7 +30,7 @@ dependencies = [
 vaultuner = "vaultuner.cli:app"
 
 [dependency-groups]
-dev = ["prek>=0.1.0", "pytest>=8.0.0"]
+dev = ["prek>=0.3.1", "pytest>=9.0.2"]
 docs = ["mkdocs>=1.6.0", "mkdocs-material>=9.5.0"]
 
 [build-system]
