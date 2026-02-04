@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/alltuner/vaultuner/compare/v0.1.1...v0.1.2) (2026-02-04)
+
+
+### Features
+
+* add --version flag to CLI ([#9](https://github.com/alltuner/vaultuner/issues/9)) ([a0ba157](https://github.com/alltuner/vaultuner/commit/a0ba157d79977c1dd348442233010551223d4924))
+* add import command to load secrets from .env file ([#7](https://github.com/alltuner/vaultuner/issues/7)) ([c58a0e6](https://github.com/alltuner/vaultuner/commit/c58a0e6926ecd0e14b37e986f897ec9850aa2a59))
+
 ## [0.1.1](https://github.com/alltuner/vaultuner/compare/v0.1.0...v0.1.1) (2026-02-04)
 
 
