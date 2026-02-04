@@ -39,14 +39,16 @@ Secrets organized by project and environment. Instantly memorable. Zero cognitiv
 ### Install
 
 ```bash
-uv tool install vaultuner
+uv tool install --python 3.12 vaultuner
 ```
 
 Or run without installing:
 
 ```bash
-uvx vaultuner list
+uvx --python 3.12 vaultuner list
 ```
+
+> **Note:** The `--python 3.12` flag is required because bitwarden-sdk only provides wheels for Python 3.11-3.12.
 
 ### Configure
 
