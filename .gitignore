@@ -16,3 +16,6 @@ wheels/
 # Environment files
 .env
 .claude/
+
+# MkDocs
+site/

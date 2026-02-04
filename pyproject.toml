@@ -3,26 +3,36 @@ name = "vaultuner"
 version = "0.1.3"
 description = "Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming"
 readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "David Poblador" }]
+keywords = ["bitwarden", "secrets", "cli", "secrets-manager", "devops"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+  "Topic :: Utilities",
+]
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "bitwarden-sdk>=1.0.0",
-    "keyring>=25.7.0",
-    "pydantic>=2.12.5",
-    "pydantic-settings>=2.12.0",
-    "rich>=14.3.2",
-    "typer>=0.21.1",
+  "bitwarden-sdk>=1.0.0",
+  "keyring>=25.7.0",
+  "pydantic>=2.12.5",
+  "pydantic-settings>=2.12.0",
+  "rich>=14.3.2",
+  "typer>=0.21.1",
 ]
 
 [project.scripts]
 vaultuner = "vaultuner.cli:app"
 
 [dependency-groups]
-dev = [
-    "prek>=0.1.0",
-    "pytest>=8.0.0",
-]
+dev = ["prek>=0.1.0", "pytest>=8.0.0"]
+docs = ["mkdocs>=1.6.0", "mkdocs-material>=9.5.0"]
 
 [build-system]
 requires = ["uv_build>=0.9.29,<0.10.0"]
 build-backend = "uv_build"
-
