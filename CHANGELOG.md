@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.5](https://github.com/alltuner/vaultuner/compare/v0.1.4...v0.1.5) (2026-02-04)
+
+
+### Bug Fixes
+
+* security review fixes and PyPI release setup ([#20](https://github.com/alltuner/vaultuner/issues/20)) ([d7bc294](https://github.com/alltuner/vaultuner/commit/d7bc2949d0ae4eb70b7044a76e846d18fa681773))
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/setup-python action to v6 ([#21](https://github.com/alltuner/vaultuner/issues/21)) ([206bd4e](https://github.com/alltuner/vaultuner/commit/206bd4e9dd44bbbae53d876e10fdca9ca32bf9cb))
+* **deps:** update actions/upload-pages-artifact action to v4 ([#22](https://github.com/alltuner/vaultuner/issues/22)) ([595bcd9](https://github.com/alltuner/vaultuner/commit/595bcd9139199f5f1798b379c7e4c06844aad744))
+* ignore Python version in Renovate ([#24](https://github.com/alltuner/vaultuner/issues/24)) ([36bd468](https://github.com/alltuner/vaultuner/commit/36bd4681a8a016f1f38b09c9f3f36f8ee0c65231))
+
+
+### Documentation Updates
+
+* add credits ([#25](https://github.com/alltuner/vaultuner/issues/25)) ([89223d4](https://github.com/alltuner/vaultuner/commit/89223d492bc2ab8dc46198120d4d47722812007e))
+
 ## [0.1.4](https://github.com/alltuner/vaultuner/compare/v0.1.3...v0.1.4) (2026-02-04)
 
 
