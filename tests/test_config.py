@@ -3,6 +3,7 @@
 
 from unittest.mock import patch
 
+import pytest
 
 from vaultuner.config import (
     SERVICE_NAME,
@@ -46,3 +47,35 @@ class TestDeleteKeyringValue:
 
         mock_delete.side_effect = keyring.errors.PasswordDeleteError()
         delete_keyring_value("missing_key")
+
+
+class TestPlatformCheck:
+    @patch("vaultuner.config.sys.platform", "linux")
+    def test_get_keyring_returns_none_on_non_darwin(self):
+        from vaultuner.config import get_keyring_value
+
+        result = get_keyring_value("test_key")
+        assert result is None
+
+    @patch("vaultuner.config.sys.platform", "linux")
+    def test_set_keyring_fails_on_non_darwin(self):
+        from vaultuner.config import set_keyring_value
+
+        with pytest.raises(SystemExit, match="macOS"):
+            set_keyring_value("test_key", "value")
+
+    @patch("vaultuner.config.sys.platform", "linux")
+    def test_delete_keyring_fails_on_non_darwin(self):
+        from vaultuner.config import delete_keyring_value
+
+        with pytest.raises(SystemExit, match="macOS"):
+            delete_keyring_value("test_key")
+
+    @patch("vaultuner.config.sys.platform", "darwin")
+    @patch("vaultuner.config.keyring.get_password")
+    def test_get_keyring_works_on_darwin(self, mock_get):
+        from vaultuner.config import get_keyring_value
+
+        mock_get.return_value = "value"
+        result = get_keyring_value("test_key")
+        assert result == "value"
