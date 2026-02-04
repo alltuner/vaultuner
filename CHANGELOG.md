@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.8](https://github.com/alltuner/vaultuner/compare/v0.1.7...v0.1.8) (2026-02-04)
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/checkout action to v6 ([#30](https://github.com/alltuner/vaultuner/issues/30)) ([88f2170](https://github.com/alltuner/vaultuner/commit/88f21709566826128cb99cbc5bbab3119a9f1f90))
+* **deps:** update astral-sh/setup-uv action to v7 ([#31](https://github.com/alltuner/vaultuner/issues/31)) ([92128d0](https://github.com/alltuner/vaultuner/commit/92128d003dcf47544e47b912bd1b064ce43e907d))
+
+
+### Documentation Updates
+
+* use custom domain vaultuner.alltuner.com ([#32](https://github.com/alltuner/vaultuner/issues/32)) ([b703bc7](https://github.com/alltuner/vaultuner/commit/b703bc77155fa988e1d0fc44941b77942fcda098))
+
 ## [0.1.7](https://github.com/alltuner/vaultuner/compare/v0.1.6...v0.1.7) (2026-02-04)
 
 
