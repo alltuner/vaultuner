@@ -1,89 +1,117 @@
 # vaultuner
 
-[![PyPI version](https://img.shields.io/github/v/release/alltuner/vaultuner)](https://github.com/alltuner/vaultuner/releases)
+[![PyPI version](https://img.shields.io/pypi/v/vaultuner)](https://pypi.org/project/vaultuner/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11-3.12](https://img.shields.io/badge/python-3.11--3.12-blue.svg)](https://www.python.org/downloads/)
 
-**A developer-friendly CLI for Bitwarden Secrets Manager** with intuitive `PROJECT/[ENV/]SECRET` naming.
+**Human-readable secrets for Bitwarden Secrets Manager.**
 
-Stop managing cryptic secret IDs. Vaultuner organizes your secrets the way you think about them: by project and environment.
+Vaultuner replaces cryptic UUIDs with intuitive paths like `myapp/prod/db-password`. Your secrets, organized the way you actually think about them.
+
+## The Problem
+
+```bash
+# Bitwarden's default CLI
+bws secret get 550e8400-e29b-41d4-a716-446655440000
+```
+
+You shouldn't need to memorize UUIDs or dig through dashboards to find secrets.
+
+## The Solution
+
+```bash
+# With vaultuner
+vaultuner get myapp/prod/db-password
+```
+
+Secrets organized by project and environment. Instantly memorable. Zero cognitive overhead.
 
 ## Features
 
-- **Intuitive naming**: `myapp/prod/db-password` instead of UUIDs
-- **Project organization**: Group secrets by project automatically
-- **Environment support**: Separate dev, staging, and prod secrets
-- **Soft delete**: Recover accidentally deleted secrets
-- **Export/Import**: Sync with `.env` files for local development
-- **Secure storage**: Credentials stored in macOS Keychain
+- **Path-based naming** - `project/env/secret` instead of UUIDs
+- **Environment isolation** - Keep dev, staging, and prod secrets separate
+- **`.env` sync** - Export to and import from `.env` files seamlessly
+- **Soft delete** - Recover accidentally deleted secrets
+- **Keychain storage** - Credentials secured in macOS Keychain
 
 ## Quick Start
 
-### Installation
+### Install
 
 ```bash
-uv tool install git+https://github.com/alltuner/vaultuner
+uv tool install vaultuner
 ```
 
-### Configuration
+Or run without installing:
 
 ```bash
-vaultuner config set access-token <your-access-token>
+uvx vaultuner list
+```
+
+### Configure
+
+```bash
+vaultuner config set access-token <your-token>
 vaultuner config set organization-id <your-org-id>
 ```
 
-Get your access token from the [Bitwarden Secrets Manager](https://vault.bitwarden.com/).
+Get credentials from [Bitwarden Secrets Manager](https://vault.bitwarden.com/).
 
-### Basic Usage
+### Use
 
 ```bash
-# Create a secret
+# Create secrets
 vaultuner set myapp/api-key "sk-abc123"
+vaultuner set myapp/prod/db-password "hunter2"
 
-# Get a secret
-vaultuner get myapp/api-key
+# Retrieve
+vaultuner get myapp/prod/db-password -v
 
-# List all secrets
+# List everything
 vaultuner list
 
-# Export to .env for local development
-vaultuner export -p myapp -o .env
+# Export for local dev
+vaultuner export -p myapp -e dev -o .env
 ```
-
-## Documentation
-
-Full documentation available at [alltuner.github.io/vaultuner](https://alltuner.github.io/vaultuner).
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `list` | List secrets (filter by project/env) |
+| `list` | List secrets with project/env filtering |
 | `get` | Retrieve a secret value |
 | `set` | Create or update a secret |
-| `delete` | Soft-delete a secret |
-| `restore` | Restore a deleted secret |
-| `export` | Export secrets to .env file |
-| `import` | Import secrets from .env file |
+| `delete` | Soft-delete (recoverable) |
+| `restore` | Recover a deleted secret |
+| `export` | Export to `.env` file |
+| `import` | Import from `.env` file |
 | `projects` | List all projects |
-| `config` | Manage credentials |
+| `config` | Manage stored credentials |
 
-## Secret Naming Convention
-
-Secrets follow the pattern `PROJECT/[ENV/]SECRET`:
+## Naming Convention
 
 ```
-myapp/api-key              # Project-level secret
-myapp/prod/db-password     # Environment-specific secret
-myapp/dev/db-password      # Different value per environment
+PROJECT/SECRET           # Project-level secret
+PROJECT/ENV/SECRET       # Environment-specific secret
+```
+
+Examples:
+```
+myapp/api-key            # Shared across environments
+myapp/prod/db-password   # Production only
+myapp/dev/db-password    # Development only
 ```
 
 ## Requirements
 
-- Python 3.11 or 3.12 (bitwarden-sdk does not provide macOS wheels for other versions)
-- macOS (for Keychain support)
+- Python 3.11 or 3.12 (bitwarden-sdk limitation)
+- macOS (Keychain integration)
 - Bitwarden Secrets Manager account
+
+## Documentation
+
+Full docs at [alltuner.github.io/vaultuner](https://alltuner.github.io/vaultuner)
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT
