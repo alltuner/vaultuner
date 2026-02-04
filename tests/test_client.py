@@ -29,6 +29,42 @@ class TestGetClient:
         assert result == client
         client.auth().login_access_token.assert_called_once()
 
+    @patch("vaultuner.client.BitwardenClient")
+    @patch("vaultuner.client.client_settings_from_dict")
+    @patch("vaultuner.client.get_settings")
+    def test_cleans_up_state_file(
+        self, mock_settings, mock_client_settings, mock_client_class, tmp_path
+    ):
+        """State file should be deleted after login to avoid leaving auth on disk."""
+        from pathlib import Path
+
+        from vaultuner.client import get_client
+
+        settings = MagicMock()
+        settings.api_url = "https://api.example.com"
+        settings.identity_url = "https://identity.example.com"
+        settings.access_token.get_secret_value.return_value = "test-token"
+        mock_settings.return_value = settings
+
+        client = MagicMock()
+        mock_client_class.return_value = client
+
+        # Track what state file was used
+        captured_path = None
+
+        def capture_login(token, path):
+            nonlocal captured_path
+            captured_path = Path(path)
+            captured_path.write_text("{}")
+
+        client.auth().login_access_token.side_effect = capture_login
+
+        get_client()
+
+        # State file should have been deleted
+        assert captured_path is not None
+        assert not captured_path.exists()
+
 
 class TestGetOrCreateProject:
     @patch("vaultuner.client.get_settings")

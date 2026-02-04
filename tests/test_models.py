@@ -31,6 +31,22 @@ class TestSecretPathParse:
         with pytest.raises(ValueError, match="Invalid path format"):
             SecretPath.parse("")
 
+    def test_parse_double_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project//name")
+
+    def test_parse_leading_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("/project/name")
+
+    def test_parse_trailing_slash_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project/name/")
+
+    def test_parse_empty_env_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("project//env/name")
+
     def test_parse_with_special_characters(self):
         path = SecretPath.parse("my_project/dev/api-key_v2")
         assert path.project == "my_project"
@@ -56,3 +72,45 @@ class TestSecretPathStr:
     def test_str_without_env(self):
         path = SecretPath(project="proj", env=None, name="key")
         assert str(path) == "proj/key"
+
+
+class TestDeletedHelpers:
+    def test_is_deleted_with_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("_deleted_/project/name") is True
+
+    def test_is_deleted_without_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("project/name") is False
+
+    def test_is_deleted_incomplete_prefix(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("_deleted_") is False
+
+    def test_is_deleted_prefix_not_at_start(self):
+        from vaultuner.models import is_deleted
+
+        assert is_deleted("project/_deleted_/name") is False
+
+    def test_mark_deleted(self):
+        from vaultuner.models import mark_deleted
+
+        assert mark_deleted("project/name") == "_deleted_/project/name"
+
+    def test_unmark_deleted(self):
+        from vaultuner.models import unmark_deleted
+
+        assert unmark_deleted("_deleted_/project/name") == "project/name"
+
+    def test_unmark_deleted_without_prefix(self):
+        from vaultuner.models import unmark_deleted
+
+        assert unmark_deleted("project/name") == "project/name"
+
+    def test_deleted_prefix_constant(self):
+        from vaultuner.models import DELETED_PREFIX
+
+        assert DELETED_PREFIX == "_deleted_/"

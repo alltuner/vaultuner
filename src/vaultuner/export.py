@@ -5,7 +5,7 @@ from pathlib import Path
 
 from vaultuner.client import get_client
 from vaultuner.config import get_settings
-from vaultuner.models import SecretPath
+from vaultuner.models import SecretPath, is_deleted
 
 
 def secret_name_to_env_var(name: str) -> str:
@@ -27,11 +27,6 @@ def parse_env_file(path: Path) -> set[str]:
             var_name = line.split("=", 1)[0].strip()
             defined_vars.add(var_name)
     return defined_vars
-
-
-def is_deleted(key: str) -> bool:
-    """Check if a secret key is marked as deleted."""
-    return key.startswith("_deleted_/")
 
 
 def export_secrets(
