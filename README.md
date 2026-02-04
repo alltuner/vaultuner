@@ -1,96 +1,89 @@
 # vaultuner
 
-Bitwarden Secrets Manager CLI with `PROJECT/[ENV/]SECRET` naming convention.
+[![PyPI version](https://img.shields.io/github/v/release/alltuner/vaultuner)](https://github.com/alltuner/vaultuner/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 
-## Requirements
+**A developer-friendly CLI for Bitwarden Secrets Manager** with intuitive `PROJECT/[ENV/]SECRET` naming.
 
-- Python 3.12
+Stop managing cryptic secret IDs. Vaultuner organizes your secrets the way you think about them: by project and environment.
 
-## Installation
+## Features
+
+- **Intuitive naming**: `myapp/prod/db-password` instead of UUIDs
+- **Project organization**: Group secrets by project automatically
+- **Environment support**: Separate dev, staging, and prod secrets
+- **Soft delete**: Recover accidentally deleted secrets
+- **Export/Import**: Sync with `.env` files for local development
+- **Secure storage**: Credentials stored in macOS Keychain
+
+## Quick Start
+
+### Installation
 
 ```bash
 uv tool install git+https://github.com/alltuner/vaultuner --python 3.12
 ```
 
-## Configuration
-
-Store your Bitwarden Secrets Manager credentials:
+### Configuration
 
 ```bash
 vaultuner config set access-token <your-access-token>
 vaultuner config set organization-id <your-org-id>
 ```
 
-Credentials are stored securely in your system keychain.
+Get your access token from the [Bitwarden Secrets Manager](https://vault.bitwarden.com/).
 
-## Usage
-
-### List secrets
+### Basic Usage
 
 ```bash
+# Create a secret
+vaultuner set myapp/api-key "sk-abc123"
+
+# Get a secret
+vaultuner get myapp/api-key
+
+# List all secrets
 vaultuner list
-vaultuner list -p myproject
-vaultuner list -p myproject -e prod
+
+# Export to .env for local development
+vaultuner export -p myapp -o .env
 ```
 
-### Get a secret
+## Documentation
 
-```bash
-vaultuner get myproject/api-key
-vaultuner get myproject/prod/db-password
-vaultuner get myproject/api-key --value  # value only
-```
+Full documentation available at [alltuner.github.io/vaultuner](https://alltuner.github.io/vaultuner).
 
-### Set a secret
+## Commands
 
-```bash
-vaultuner set myproject/api-key "secret-value"
-vaultuner set myproject/prod/db-password "password" --note "Production DB"
-```
+| Command | Description |
+|---------|-------------|
+| `list` | List secrets (filter by project/env) |
+| `get` | Retrieve a secret value |
+| `set` | Create or update a secret |
+| `delete` | Soft-delete a secret |
+| `restore` | Restore a deleted secret |
+| `export` | Export secrets to .env file |
+| `import` | Import secrets from .env file |
+| `projects` | List all projects |
+| `config` | Manage credentials |
 
-### Delete a secret
-
-```bash
-vaultuner delete myproject/api-key           # soft delete
-vaultuner delete myproject/api-key --permanent  # hard delete
-```
-
-### Restore a deleted secret
-
-```bash
-vaultuner restore myproject/api-key
-```
-
-### Export to .env file
-
-```bash
-vaultuner export                    # uses current directory name as project
-vaultuner export -p myproject       # specify project
-vaultuner export -p myproject -e prod  # filter by environment
-vaultuner export -o secrets.env     # custom output file
-```
-
-### Import from .env file
-
-```bash
-vaultuner import                    # interactive import from .env
-vaultuner import -p myproject       # specify project
-vaultuner import -e prod            # import to specific environment
-vaultuner import -i secrets.env     # custom input file
-vaultuner import -y                 # import all without prompting
-```
-
-Existing secrets are skipped automatically.
-
-### List projects
-
-```bash
-vaultuner projects
-```
-
-## Secret naming convention
+## Secret Naming Convention
 
 Secrets follow the pattern `PROJECT/[ENV/]SECRET`:
 
-- `myapp/api-key` - project-level secret (no environment)
-- `myapp/prod/db-password` - environment-specific secret
+```
+myapp/api-key              # Project-level secret
+myapp/prod/db-password     # Environment-specific secret
+myapp/dev/db-password      # Different value per environment
+```
+
+## Requirements
+
+- Python 3.12
+- macOS (for Keychain support)
+- Bitwarden Secrets Manager account
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
