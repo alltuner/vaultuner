@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/alltuner/vaultuner/compare/v0.1.6...v0.1.7) (2026-02-04)
+
+
+### Documentation Updates
+
+* add --python 3.12 flag to install commands ([#28](https://github.com/alltuner/vaultuner/issues/28)) ([978d997](https://github.com/alltuner/vaultuner/commit/978d997cfd601e012b83dbe800e506a0e212b460))
+
 ## [0.1.6](https://github.com/alltuner/vaultuner/compare/v0.1.5...v0.1.6) (2026-02-04)
 
 
