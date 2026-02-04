@@ -393,9 +393,9 @@ def import_env(
 
     settings = get_settings()
     client = get_client()
-    project_id = get_or_create_project(client, project_name)
 
-    created_count = 0
+    # Phase 1: Collect secrets to import
+    to_import: list[tuple[str, str]] = []
     skipped_count = 0
 
     for var_name, value in entries:
@@ -418,6 +418,18 @@ def import_env(
                 skipped_count += 1
                 continue
 
+        to_import.append((secret_path, value))
+
+    if not to_import:
+        console.print("\n[dim]Nothing to import.[/dim]")
+        return
+
+    # Phase 2: Import all approved secrets
+    console.print(f"\n[cyan]Importing {len(to_import)} secrets...[/cyan]")
+    project_id = get_or_create_project(client, project_name)
+    created_count = 0
+
+    for secret_path, value in to_import:
         response = client.secrets().create(
             organization_id=settings.organization_id,
             key=secret_path,
@@ -427,8 +439,7 @@ def import_env(
         )
         if response.data:
             created_count += 1
-            if yes:
-                console.print(f"[green]Created:[/green] {secret_path}")
+            console.print(f"[green]Created:[/green] {secret_path}")
 
     console.print(
         f"\n[green]Import complete:[/green] {created_count} created, {skipped_count} skipped"
