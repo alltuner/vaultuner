@@ -62,8 +62,8 @@ Your Bitwarden access token is stored in macOS Keychain, not in plaintext config
 ## Quick Example
 
 ```bash
-# Install
-uv tool install vaultuner
+# Install (--python 3.12 required for bitwarden-sdk compatibility)
+uv tool install --python 3.12 vaultuner
 
 # Configure once
 vaultuner config set access-token <your-token>

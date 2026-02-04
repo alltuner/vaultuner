@@ -11,18 +11,21 @@
 The fastest way to install vaultuner is using [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv tool install vaultuner
+uv tool install --python 3.12 vaultuner
 ```
 
 This installs vaultuner as a standalone tool with its own isolated environment.
+
+!!! note "Why `--python 3.12`?"
+    The bitwarden-sdk dependency only provides pre-built wheels for Python 3.11 and 3.12. Without this flag, uv may attempt to use a newer Python version and fail to install.
 
 ## Run Without Installing
 
 You can also run vaultuner directly without installing:
 
 ```bash
-uvx vaultuner list
-uvx vaultuner get myapp/api-key
+uvx --python 3.12 vaultuner list
+uvx --python 3.12 vaultuner get myapp/api-key
 ```
 
 This is useful for one-off commands or trying vaultuner before committing to an install.
