@@ -6,11 +6,12 @@ from pathlib import Path
 
 from bitwarden_sdk import BitwardenClient, DeviceType, client_settings_from_dict
 
-from vaultuner.config import settings
+from vaultuner.config import get_settings
 
 
 def get_client() -> BitwardenClient:
     """Create and authenticate a Bitwarden client."""
+    settings = get_settings()
     client = BitwardenClient(
         client_settings_from_dict(
             {
@@ -28,6 +29,7 @@ def get_client() -> BitwardenClient:
 
 def get_or_create_project(client: BitwardenClient, project_name: str) -> str:
     """Get project ID by name, creating it if it doesn't exist."""
+    settings = get_settings()
     response = client.projects().list(settings.organization_id)
     if response.data and response.data.data:
         for project in response.data.data:
@@ -42,6 +44,7 @@ def get_or_create_project(client: BitwardenClient, project_name: str) -> str:
 
 def find_secret_by_key(client: BitwardenClient, key: str) -> dict | None:
     """Find a secret by its key name."""
+    settings = get_settings()
     response = client.secrets().list(settings.organization_id)
     if not response.data or not response.data.data:
         return None

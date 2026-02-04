@@ -1,12 +1,14 @@
 # ABOUTME: Typer CLI for Bitwarden Secrets Manager.
 # ABOUTME: Commands for listing, getting, setting, and deleting secrets.
 
+from typing import Literal
+
 import typer
 from rich.console import Console
 from rich.table import Table
 
 from vaultuner.client import find_secret_by_key, get_client, get_or_create_project
-from vaultuner.config import settings
+from vaultuner.config import delete_keyring_value, get_keyring_value, get_settings, set_keyring_value
 from vaultuner.models import SecretPath
 
 DELETED_PREFIX = "_deleted_/"
@@ -15,6 +17,9 @@ app = typer.Typer(
     help="Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming.",
     no_args_is_help=True,
 )
+config_app = typer.Typer(help="Manage vaultuner credentials stored in system keychain.")
+app.add_typer(config_app, name="config")
+
 console = Console()
 err_console = Console(stderr=True)
 
@@ -31,6 +36,55 @@ def unmark_deleted(key: str) -> str:
     return key.removeprefix(DELETED_PREFIX)
 
 
+ConfigKey = Literal["access-token", "organization-id"]
+KEYRING_MAP = {
+    "access-token": "bws_access_token",
+    "organization-id": "bws_organization_id",
+}
+
+
+@config_app.command("set")
+def config_set(
+    key: ConfigKey = typer.Argument(..., help="Config key to set"),
+    value: str = typer.Argument(..., help="Value to store"),
+):
+    """Store a credential in the system keychain."""
+    keyring_key = KEYRING_MAP[key]
+    set_keyring_value(keyring_key, value)
+    console.print(f"[green]Stored:[/green] {key}")
+
+
+@config_app.command("show")
+def config_show():
+    """Show current configuration status."""
+    table = Table(show_header=True, header_style="bold")
+    table.add_column("Setting", style="cyan")
+    table.add_column("Status")
+
+    access_token = get_keyring_value("access_token")
+    org_id = get_keyring_value("organization_id")
+
+    table.add_row(
+        "access-token",
+        "[green]configured[/green]" if access_token else "[red]not set[/red]",
+    )
+    table.add_row(
+        "organization-id",
+        f"[green]{org_id}[/green]" if org_id else "[red]not set[/red]",
+    )
+    console.print(table)
+
+
+@config_app.command("delete")
+def config_delete(
+    key: ConfigKey = typer.Argument(..., help="Config key to delete"),
+):
+    """Remove a credential from the system keychain."""
+    keyring_key = KEYRING_MAP[key]
+    delete_keyring_value(keyring_key)
+    console.print(f"[red]Deleted:[/red] {key}")
+
+
 @app.command("list")
 def list_secrets(
     project: str | None = typer.Option(None, "--project", "-p", help="Filter by project"),
@@ -38,6 +92,7 @@ def list_secrets(
     deleted: bool = typer.Option(False, "--deleted", "-d", help="Show deleted secrets"),
 ):
     """List secrets. Optionally filter by project and/or environment."""
+    settings = get_settings()
     client = get_client()
     response = client.secrets().list(settings.organization_id)
     if not response.data or not response.data.data:
@@ -121,6 +176,7 @@ def set(
     note: str | None = typer.Option(None, "--note", "-n", help="Optional note"),
 ):
     """Create or update a secret."""
+    settings = get_settings()
     secret_path = SecretPath.parse(path)
     client = get_client()
 
@@ -160,6 +216,7 @@ def delete(
     permanent: bool = typer.Option(False, "--permanent", help="Permanently delete"),
 ):
     """Delete a secret (soft-delete by default)."""
+    settings = get_settings()
     client = get_client()
     secret_info = find_secret_by_key(client, path)
     if not secret_info:
@@ -199,6 +256,7 @@ def restore(
     path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
 ):
     """Restore a soft-deleted secret."""
+    settings = get_settings()
     client = get_client()
     deleted_key = mark_deleted(path)
     secret_info = find_secret_by_key(client, deleted_key)
@@ -226,6 +284,7 @@ def restore(
 @app.command()
 def projects():
     """List all projects."""
+    settings = get_settings()
     client = get_client()
     response = client.projects().list(settings.organization_id)
     if not response.data or not response.data.data:
