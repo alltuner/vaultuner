@@ -35,5 +35,5 @@ dev = ["prek>=0.3.1", "pytest>=9.0.2"]
 docs = ["mkdocs>=1.6.0", "mkdocs-material>=9.5.0"]
 
 [build-system]
-requires = ["uv_build>=0.9.29,<0.10.0"]
+requires = ["uv_build>=0.10.0,<0.11.0"]
 build-backend = "uv_build"

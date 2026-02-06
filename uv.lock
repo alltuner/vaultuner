@@ -857,7 +857,7 @@ wheels = [
 
 [[package]]
 name = "vaultuner"
-version = "0.1.4"
+version = "0.1.8"
 source = { editable = "." }
 dependencies = [
     { name = "bitwarden-sdk" },
