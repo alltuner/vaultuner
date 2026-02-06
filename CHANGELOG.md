@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.9](https://github.com/alltuner/vaultuner/compare/v0.1.8...v0.1.9) (2026-02-06)
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependency uv_build to &gt;=0.10.0,&lt;0.11.0 ([#34](https://github.com/alltuner/vaultuner/issues/34)) ([d8637e4](https://github.com/alltuner/vaultuner/commit/d8637e456718c0812df2ea4115a422e99d9515b1))
+
+
+### Documentation Updates
+
+* apply All Tuner Labs corporate MkDocs style ([#35](https://github.com/alltuner/vaultuner/issues/35)) ([e634af3](https://github.com/alltuner/vaultuner/commit/e634af300a218688b1e84f8ca456f4e3c81a8256))
+
 ## [0.1.8](https://github.com/alltuner/vaultuner/compare/v0.1.7...v0.1.8) (2026-02-04)
 
 
