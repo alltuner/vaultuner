@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.10](https://github.com/alltuner/vaultuner/compare/v0.1.9...v0.1.10) (2026-04-01)
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/deploy-pages action to v5 ([#41](https://github.com/alltuner/vaultuner/issues/41)) ([9973dc8](https://github.com/alltuner/vaultuner/commit/9973dc84e87ecd999cc4cefc343115775dd56ec3))
+* **deps:** update dependency uv_build to &gt;=0.11.2,&lt;0.12.0 ([#40](https://github.com/alltuner/vaultuner/issues/40)) ([9a16daa](https://github.com/alltuner/vaultuner/commit/9a16daa764a5d1c00256190cb9c27f82687d7398))
+
+
+### Documentation Updates
+
+* add support section and FUNDING.yml ([#37](https://github.com/alltuner/vaultuner/issues/37)) ([d455034](https://github.com/alltuner/vaultuner/commit/d455034da5e6fc40252868f578a6019cca3ed3bf))
+
 ## [0.1.9](https://github.com/alltuner/vaultuner/compare/v0.1.8...v0.1.9) (2026-02-06)
 
 
