@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.11](https://github.com/alltuner/vaultuner/compare/v0.1.10...v0.1.11) (2026-04-01)
+
+
+### Features
+
+* add Python 3.13 and 3.14 support ([#43](https://github.com/alltuner/vaultuner/issues/43)) ([e46a947](https://github.com/alltuner/vaultuner/commit/e46a9470b4a13aaa721ebc0d033050568c71f3f2))
+* add secret generation command and set --generate flag ([#42](https://github.com/alltuner/vaultuner/issues/42)) ([998cae9](https://github.com/alltuner/vaultuner/commit/998cae935020b9eda1bbed249c55ad8b29309322))
+
 ## [0.1.10](https://github.com/alltuner/vaultuner/compare/v0.1.9...v0.1.10) (2026-04-01)
 
 
