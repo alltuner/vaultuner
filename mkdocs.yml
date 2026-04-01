@@ -75,6 +75,7 @@ nav:
       - list: commands/list.md
       - get: commands/get.md
       - set: commands/set.md
+      - generate: commands/generate.md
       - delete: commands/delete.md
       - restore: commands/restore.md
       - export: commands/export.md

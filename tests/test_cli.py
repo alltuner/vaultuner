@@ -221,6 +221,77 @@ class TestSetSecret:
         assert "Updated" in result.stdout
 
 
+class TestSetGenerate:
+    @patch("vaultuner.cli.get_or_create_project")
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_creates_with_generated_value(
+        self, mock_settings, mock_client, mock_find, mock_project
+    ):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = None
+        mock_project.return_value = "project-id"
+        client = MagicMock()
+        client.secrets().create.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["set", "myproject/api-key", "--generate"])
+        assert result.exit_code == 0
+        assert "Created" in result.output
+        assert "Generated value:" in result.output
+
+    @patch("vaultuner.cli.get_or_create_project")
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_generate_prints_value(
+        self, mock_settings, mock_client, mock_find, mock_project
+    ):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = None
+        mock_project.return_value = "project-id"
+        client = MagicMock()
+        client.secrets().create.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["set", "myproject/api-key", "--generate"])
+        assert result.exit_code == 0
+        # Verify the value passed to create matches what was printed
+        call_args = client.secrets().create.call_args
+        stored_value = call_args.kwargs.get("value") or call_args[1].get("value")
+        assert stored_value in result.output
+
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_generate_updates_existing(self, mock_settings, mock_client, mock_find):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = {"id": "secret-id", "key": "myproject/api-key"}
+        client = MagicMock()
+        client.secrets().update.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["set", "myproject/api-key", "--generate"])
+        assert result.exit_code == 0
+        assert "Updated" in result.output
+        # Should still print the generated value
+        call_args = client.secrets().update.call_args
+        stored_value = call_args.kwargs.get("value") or call_args[1].get("value")
+        assert stored_value in result.output
+
+    def test_generate_and_value_conflict(self):
+        result = runner.invoke(
+            app, ["set", "myproject/api-key", "my-value", "--generate"]
+        )
+        assert result.exit_code == 1
+        assert "Cannot use --generate with an explicit value" in result.output
+
+    def test_missing_value_and_no_generate(self):
+        result = runner.invoke(app, ["set", "myproject/api-key"])
+        assert result.exit_code != 0
+
+
 class TestDeleteSecret:
     @patch("vaultuner.cli.find_secret_by_key")
     @patch("vaultuner.cli.get_client")

@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.table import Table
 
 from vaultuner.client import find_secret_by_key, get_client, get_or_create_project
+from vaultuner.generate import generate_secret
 from vaultuner.config import (
     DEFAULT_PROJECT_NAME,
     delete_keyring_value,
@@ -193,10 +194,23 @@ def get(
 @app.command()
 def set(
     path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
-    value: str = typer.Argument(..., help="Secret value"),
+    value: str | None = typer.Argument(None, help="Secret value"),
     note: str | None = typer.Option(None, "--note", "-n", help="Optional note"),
+    gen: bool = typer.Option(False, "--generate", "-g", help="Generate a random value"),
 ):
     """Create or update a secret."""
+    if gen and value is not None:
+        err_console.print(
+            "[red]Error:[/red] Cannot use --generate with an explicit value"
+        )
+        raise typer.Exit(1)
+    if not gen and value is None:
+        err_console.print("[red]Error:[/red] Provide a value or use --generate")
+        raise typer.Exit(1)
+
+    if gen:
+        value = generate_secret()
+
     settings = get_settings()
     client = get_client()
 
@@ -227,6 +241,9 @@ def set(
             err_console.print("[red]Failed to create secret.[/red]")
             raise typer.Exit(1)
         console.print(f"[green]Created:[/green] {path}")
+
+    if gen:
+        console.print(f"[cyan]Generated value:[/cyan] {value}")
 
 
 @app.command()
@@ -320,6 +337,33 @@ def projects():
         table.add_row(project.name)
 
     console.print(table)
+
+
+@app.command()
+def generate(
+    length: int = typer.Option(24, "--length", "-l", help="Length of generated secret"),
+    no_lowercase: bool = typer.Option(False, "--no-lowercase", help="Exclude lowercase"),
+    no_uppercase: bool = typer.Option(False, "--no-uppercase", help="Exclude uppercase"),
+    no_numbers: bool = typer.Option(False, "--no-numbers", help="Exclude numbers"),
+    no_special: bool = typer.Option(False, "--no-special", help="Exclude special characters"),
+    allow_ambiguous: bool = typer.Option(
+        False, "--allow-ambiguous", help="Allow ambiguous characters (I, O, l, 0, 1)"
+    ),
+):
+    """Generate a random secret value."""
+    try:
+        value = generate_secret(
+            length=length,
+            avoid_ambiguous=not allow_ambiguous,
+            lowercase=not no_lowercase,
+            uppercase=not no_uppercase,
+            numbers=not no_numbers,
+            special=not no_special,
+        )
+    except ValueError as e:
+        err_console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(1) from None
+    print(value)
 
 
 @app.command()
