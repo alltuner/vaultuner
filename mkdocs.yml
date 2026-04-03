@@ -84,6 +84,7 @@ nav:
       - config: commands/config.md
   - Concepts:
       - Naming Convention: concepts/naming.md
+      - Secret Metadata: concepts/metadata.md
       - Soft Delete: concepts/soft-delete.md
 
 extra:

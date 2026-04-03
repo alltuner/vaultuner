@@ -31,6 +31,7 @@ Secrets organized by project and environment. Instantly memorable. Zero cognitiv
 - **Path-based naming** - `project/env/secret` instead of UUIDs
 - **Environment isolation** - Keep dev, staging, and prod secrets separate
 - **`.env` sync** - Export to and import from `.env` files seamlessly
+- **Secret metadata** - Attach descriptions to secrets via `--description`
 - **Soft delete** - Recover accidentally deleted secrets
 - **Keychain storage** - Credentials secured in macOS Keychain
 

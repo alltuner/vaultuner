@@ -32,6 +32,18 @@ vaultuner set myapp/dev/db-password "dev-password"
 vaultuner set myapp/prod/db-password "prod-password"
 ```
 
+## Add Metadata
+
+Attach a description to any secret:
+
+```bash
+# When creating
+vaultuner set myapp/api-key "sk-test-abc123" --description "Stripe test key"
+
+# To an existing secret (value unchanged)
+vaultuner set myapp/api-key --description "Stripe test key"
+```
+
 ## List Secrets
 
 ```bash
