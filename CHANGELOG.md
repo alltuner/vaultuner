@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.12](https://github.com/alltuner/vaultuner/compare/v0.1.11...v0.1.12) (2026-04-03)
+
+
+### Features
+
+* bump Python to 3.14 and bitwarden-sdk to 2.0.0 ([#45](https://github.com/alltuner/vaultuner/issues/45)) ([48a0115](https://github.com/alltuner/vaultuner/commit/48a0115cbb2e3aca7bf590c50a055eab0efb149b))
+
+
+### Bug Fixes
+
+* handle inaccessible keychain gracefully over SSH ([#46](https://github.com/alltuner/vaultuner/issues/46)) ([d6a2e0a](https://github.com/alltuner/vaultuner/commit/d6a2e0a75e19b2facc5c991badc8d30a782a5d40))
+
 ## [0.1.11](https://github.com/alltuner/vaultuner/compare/v0.1.10...v0.1.11) (2026-04-01)
 
 
