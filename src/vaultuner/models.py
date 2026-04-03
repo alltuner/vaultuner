@@ -1,7 +1,9 @@
 # ABOUTME: Data models for vaultuner.
-# ABOUTME: SecretPath represents the PROJECT/[ENV/]SECRET naming convention.
+# ABOUTME: SecretPath, SecretMetadata, and note frontmatter parsing.
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+import yaml
 
 DELETED_PREFIX = "_deleted_/"
 
@@ -53,3 +55,61 @@ class SecretPath(BaseModel):
 
     def __str__(self) -> str:
         return self.to_key()
+
+
+FRONTMATTER_SEPARATOR = "---"
+
+
+class SecretMetadata(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    description: str | None = None
+
+    def is_empty(self) -> bool:
+        return all(v is None for v in self.model_dump().values())
+
+
+def parse_note(note: str | None) -> tuple[SecretMetadata, str]:
+    """Parse a note into metadata frontmatter and body text."""
+    if not note:
+        return SecretMetadata(), ""
+
+    lines = note.split("\n")
+    if lines[0] != FRONTMATTER_SEPARATOR:
+        return SecretMetadata(), note
+
+    try:
+        end = lines.index(FRONTMATTER_SEPARATOR, 1)
+    except ValueError:
+        return SecretMetadata(), note
+
+    frontmatter_lines = lines[1:end]
+    raw = yaml.safe_load("\n".join(frontmatter_lines)) or {}
+    metadata = SecretMetadata(**raw) if isinstance(raw, dict) else SecretMetadata()
+
+    body_lines = lines[end + 1 :]
+    body = "\n".join(body_lines)
+    # Strip a single leading newline that separates frontmatter from body,
+    # but preserve the body content if it's empty string
+    if body == "\n":
+        body = ""
+
+    return metadata, body
+
+
+def render_note(metadata: SecretMetadata, body: str) -> str | None:
+    """Render metadata and body back into a note string."""
+    if metadata.is_empty() and not body:
+        return None
+
+    if metadata.is_empty():
+        return body
+
+    data = {k: v for k, v in metadata.model_dump().items() if v is not None}
+    frontmatter = yaml.dump(data, default_flow_style=False).rstrip("\n")
+
+    parts = [FRONTMATTER_SEPARATOR, frontmatter, FRONTMATTER_SEPARATOR]
+    if body:
+        parts.append(body)
+
+    return "\n".join(parts)

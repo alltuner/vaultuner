@@ -1007,13 +1007,14 @@ wheels = [
 
 [[package]]
 name = "vaultuner"
-version = "0.1.11"
+version = "0.1.12"
 source = { editable = "." }
 dependencies = [
     { name = "bitwarden-sdk" },
     { name = "keyring" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "pyyaml" },
     { name = "rich" },
     { name = "typer" },
 ]
@@ -1034,6 +1035,7 @@ requires-dist = [
     { name = "keyring", specifier = ">=25.7.0" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rich", specifier = ">=14.3.2" },
     { name = "typer", specifier = ">=0.21.1" },
 ]
