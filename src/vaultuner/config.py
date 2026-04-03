@@ -21,10 +21,13 @@ def _require_darwin() -> None:
 
 
 def get_keyring_value(key: str) -> str | None:
-    """Get a value from the system keychain. Returns None on non-darwin."""
+    """Get a value from the system keychain. Returns None on non-darwin or if inaccessible."""
     if sys.platform != "darwin":
         return None
-    return keyring.get_password(SERVICE_NAME, key)
+    try:
+        return keyring.get_password(SERVICE_NAME, key)
+    except keyring.errors.KeyringError:
+        return None
 
 
 def set_keyring_value(key: str, value: str) -> None:

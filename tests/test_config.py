@@ -27,6 +27,14 @@ class TestGetKeyringValue:
         result = get_keyring_value("missing_key")
         assert result is None
 
+    @patch("vaultuner.config.keyring.get_password")
+    def test_returns_none_when_keyring_inaccessible(self, mock_get):
+        import keyring.errors
+
+        mock_get.side_effect = keyring.errors.KeyringError("(-25308, 'Unknown Error')")
+        result = get_keyring_value("test_key")
+        assert result is None
+
 
 class TestSetKeyringValue:
     @patch("vaultuner.config.keyring.set_password")
