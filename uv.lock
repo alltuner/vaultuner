@@ -45,23 +45,17 @@ wheels = [
 
 [[package]]
 name = "bitwarden-sdk"
-version = "1.0.0"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "dateutils" },
+    { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/03/11934ae9d668283895286872a7af3de25d324ec9ac86da5a56ac9dc48544/bitwarden_sdk-1.0.0.tar.gz", hash = "sha256:846bc84ebc29ba326211e6552e628cd7d000a986ef35552ffda9d10bde913e21", size = 374462, upload-time = "2024-09-30T13:31:36.346Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bb/62/a4c32671dc89d9c0c6d68fbfb339cc5ec30091b094c41aa864dde6badf52/bitwarden_sdk-1.0.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:d7315e35ae2634efb24ca4e5fbffbfc64561ef2a59824982d56b0044b2f14542", size = 2423140, upload-time = "2024-09-30T13:30:46.411Z" },
-    { url = "https://files.pythonhosted.org/packages/f1/64/de3e3062684f69818dcd587032675e74c0b24b3c0b4b80295f5cc21af1fe/bitwarden_sdk-1.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:a9fa124ad617fd1c01b698070c1ca4c82c37bb0e168a7a5843cf7cdcb2eb6c67", size = 2260450, upload-time = "2024-09-30T13:30:47.887Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/38/4cda8b0f0b4101015d36d9b83e4afd822c3e99f0c9623acc097257cae298/bitwarden_sdk-1.0.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:61f5c524073f6da5c41a699f0acc1e3bfa087de32c9d611c1b0e4e89f760edbc", size = 2537929, upload-time = "2024-09-30T13:30:49.281Z" },
-    { url = "https://files.pythonhosted.org/packages/83/1d/da3930991ae5eaa309ff3fe254998cdebdfc759c65bd615af3d74a3fbcd5/bitwarden_sdk-1.0.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:305d411055f2b265f19b10c004e895af8abb128012f92d855540bdaa090a2bbc", size = 2616789, upload-time = "2024-09-30T13:30:50.552Z" },
-    { url = "https://files.pythonhosted.org/packages/2e/83/0299580a7cdff78a72d3933c8349a5a22533c28b37bfdf007723dd78ee99/bitwarden_sdk-1.0.0-cp311-none-win_amd64.whl", hash = "sha256:2ad8018b53a24b3e6b25f89c4654be48db0cedb893eba0f5e3055d795c3e3d68", size = 2235406, upload-time = "2024-09-30T13:30:51.796Z" },
-    { url = "https://files.pythonhosted.org/packages/b7/3f/34432667d89b9e3368f0e929f77417e21a4351ab52717f64fbf28e2cd68b/bitwarden_sdk-1.0.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:cc493f18fee92860b069cd18365ba668d28b52a555157d1a18b5ab0480dadf59", size = 2423031, upload-time = "2024-09-30T13:30:52.991Z" },
-    { url = "https://files.pythonhosted.org/packages/9d/aa/73415b9995722eeb0861fcf49166572d8159c06d6df56f9944774519ce69/bitwarden_sdk-1.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:9f7f9bfc8923dcb0ca88fb6eefae43cd928805f536f746be1db4a8dfc9b5f44d", size = 2260092, upload-time = "2024-09-30T13:30:54.256Z" },
-    { url = "https://files.pythonhosted.org/packages/bb/47/f849a9402b931f56f5476f603b21cda92e90323fb73ad2546014e3b8eb52/bitwarden_sdk-1.0.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:9a6aada6f421f5fc26f4e9bbc7f3e538439cb388794021214e49ce7578a8d345", size = 2537437, upload-time = "2024-09-30T13:30:55.475Z" },
-    { url = "https://files.pythonhosted.org/packages/dc/3a/42f4ae601947e39a48cb3e23e672fe467bb9ed22ebe869778860cece8c4a/bitwarden_sdk-1.0.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:2fae1101b527ffdceed2f817d16d20076a5949df9fc64184053f09ff79f035f3", size = 2616881, upload-time = "2024-09-30T13:30:57.538Z" },
-    { url = "https://files.pythonhosted.org/packages/28/b3/43fda8bac7e21e431088270ad2e5d0deaa4847315f1687c9b8eacb56300f/bitwarden_sdk-1.0.0-cp312-none-win_amd64.whl", hash = "sha256:7198c80a1cb87d28f2f134db3296b3e34255c8ba4b9863a5c9a2dca3c2ce6803", size = 2235663, upload-time = "2024-09-30T13:30:58.748Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/66/177264df153e6714fa3d18fcac45374cc7ff481dd347acb5b02592f9d45a/bitwarden_sdk-2.0.0-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:054ccdda8fbf615d0e582e1e75c7c316bf291ed03b27efd774325ecc3b0fb0b8", size = 3593062, upload-time = "2026-02-05T23:00:22.595Z" },
+    { url = "https://files.pythonhosted.org/packages/42/b1/88c0d624b16d974bbcc3636d68cee15d9908980dc05c881b1ff46a19509d/bitwarden_sdk-2.0.0-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:3cc41cae078d086b1eaeb9e4f781454cfba7b77119f70908d074bed259dce8a6", size = 3397507, upload-time = "2026-02-05T23:00:24.683Z" },
+    { url = "https://files.pythonhosted.org/packages/77/93/8905bd312f40a0c1c7fabd939a3271380ccad959b9f99eda452f254fabfa/bitwarden_sdk-2.0.0-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a49739ebe37103df677e263637fdabc61682f10a5f4518fb22b130d530fffbcd", size = 3192519, upload-time = "2026-02-05T23:00:26.342Z" },
+    { url = "https://files.pythonhosted.org/packages/55/03/55ea33d637e74bf7e50f39c361b82c8f03630d6f35ae8944d3a4a8399585/bitwarden_sdk-2.0.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c0e2dd8d8a3db2f0cb29d6dcd55fd578bd66839f666b8e1712712b6e9791021", size = 3397007, upload-time = "2026-02-05T23:00:28.572Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/17/a96033bc9a55521a9d2a4022d69f72da302df4ac83eb182379fec9df102c/bitwarden_sdk-2.0.0-cp39-abi3-win_amd64.whl", hash = "sha256:9b9a523dab81cca56151481bd0dce07bd58695fd14b4c5bcab520c7a24fc16c3", size = 3347145, upload-time = "2026-02-05T23:00:30.569Z" },
 ]
 
 [[package]]
@@ -258,19 +252,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c5/de/3787054e8f7972658370198753835d9d680f6cd4a39df9f877b57f0dd69c/cryptography-46.0.4-pp311-pypy311_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:8a15fb869670efa8f83cbffbc8753c1abf236883225aed74cd179b720ac9ec80", size = 4382765, upload-time = "2026-01-28T00:24:27.577Z" },
     { url = "https://files.pythonhosted.org/packages/8a/5f/60e0afb019973ba6a0b322e86b3d61edf487a4f5597618a430a2a15f2d22/cryptography-46.0.4-pp311-pypy311_pp73-manylinux_2_34_aarch64.whl", hash = "sha256:fdc3daab53b212472f1524d070735b2f0c214239df131903bae1d598016fa822", size = 4216066, upload-time = "2026-01-28T00:24:29.056Z" },
     { url = "https://files.pythonhosted.org/packages/81/8e/bf4a0de294f147fee66f879d9bae6f8e8d61515558e3d12785dd90eca0be/cryptography-46.0.4-pp311-pypy311_pp73-manylinux_2_34_x86_64.whl", hash = "sha256:44cc0675b27cadb71bdbb96099cca1fa051cd11d2ade09e5cd3a2edb929ed947", size = 4382025, upload-time = "2026-01-28T00:24:30.681Z" },
-]
-
-[[package]]
-name = "dateutils"
-version = "0.6.12"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "python-dateutil" },
-    { name = "pytz" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/70/2e/a2d1337ac0ebb32b3b4ad921d9621f8b2f6bb20de0da47ec5d3734f08ce2/dateutils-0.6.12.tar.gz", hash = "sha256:03dd90bcb21541bd4eb4b013637e4f1b5f944881c46cc6e4b67a6059e370e3f1", size = 4954, upload-time = "2020-10-23T07:09:34.998Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/23/cbac954194e5132448cfec0148be1318baac99e68ed597b3d7ff4ae5c182/dateutils-0.6.12-py2.py3-none-any.whl", hash = "sha256:f33b6ab430fa4166e7e9cb8b21ee9f6c9843c48df1a964466f52c79b2a8d53b3", size = 5718, upload-time = "2020-10-23T07:09:32.582Z" },
 ]
 
 [[package]]
@@ -845,15 +826,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pytz"
-version = "2025.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f8/bf/abbd3cdfb8fbc7fb3d4d38d320f2441b1e7cbe29be4f23797b4a2b5d8aac/pytz-2025.2.tar.gz", hash = "sha256:360b9e3dbb49a209c21ad61809c7fb453643e048b38924c765813546746e81c3", size = 320884, upload-time = "2025-03-25T02:25:00.538Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/c4/34e93fe5f5429d7570ec1fa436f1986fb1f00c3e0f43a589fe2bbcd22c3f/pytz-2025.2-py2.py3-none-any.whl", hash = "sha256:5ddf76296dd8c44c26eb8f4b6f35488f3ccbf6fbbd7adee0b7262d43f0ec2f00", size = 509225, upload-time = "2025-03-25T02:24:58.468Z" },
-]
-
-[[package]]
 name = "pywin32-ctypes"
 version = "0.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1035,7 +1007,7 @@ wheels = [
 
 [[package]]
 name = "vaultuner"
-version = "0.1.10"
+version = "0.1.11"
 source = { editable = "." }
 dependencies = [
     { name = "bitwarden-sdk" },
@@ -1058,7 +1030,7 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bitwarden-sdk", specifier = ">=1.0.0" },
+    { name = "bitwarden-sdk", specifier = ">=2.0.0" },
     { name = "keyring", specifier = ">=25.7.0" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
