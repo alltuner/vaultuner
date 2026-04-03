@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/vaultuner)](https://pypi.org/project/vaultuner/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11-3.12](https://img.shields.io/badge/python-3.11--3.12-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11-3.14](https://img.shields.io/badge/python-3.11--3.14-blue.svg)](https://www.python.org/downloads/)
 
 **Human-readable secrets for Bitwarden Secrets Manager.**
 
@@ -39,16 +39,14 @@ Secrets organized by project and environment. Instantly memorable. Zero cognitiv
 ### Install
 
 ```bash
-uv tool install --python 3.12 vaultuner
+uv tool install vaultuner
 ```
 
 Or run without installing:
 
 ```bash
-uvx --python 3.12 vaultuner list
+uvx vaultuner list
 ```
-
-> **Note:** The `--python 3.12` flag is required because bitwarden-sdk only provides wheels for Python 3.11-3.12.
 
 ### Configure
 
@@ -106,7 +104,7 @@ myapp/dev/db-password    # Development only
 
 ## Requirements
 
-- Python 3.11 or 3.12 (bitwarden-sdk limitation)
+- Python 3.11+
 - macOS (Keychain integration)
 - Bitwarden Secrets Manager account
 
