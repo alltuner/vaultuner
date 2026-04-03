@@ -23,6 +23,9 @@ from vaultuner.models import (
     SecretPath,
     is_deleted,
     mark_deleted,
+    parse_note,
+    render_note,
+    SecretMetadata,
     unmark_deleted,
 )
 
@@ -196,8 +199,11 @@ def get(
         table.add_column("Value")
         table.add_row("Path", f"[cyan]{response.data.key}[/cyan]")
         table.add_row("Value", f"[green]{response.data.value}[/green]")
-        if response.data.note:
-            table.add_row("Note", f"[dim]{response.data.note}[/dim]")
+        metadata, body = parse_note(response.data.note)
+        if metadata.description:
+            table.add_row("Description", f"[dim]{metadata.description}[/dim]")
+        if body:
+            table.add_row("Note", f"[dim]{body}[/dim]")
         console.print(table)
 
 
@@ -206,6 +212,9 @@ def set(
     path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
     value: str | None = typer.Argument(None, help="Secret value"),
     note: str | None = typer.Option(None, "--note", "-n", help="Optional note"),
+    description: str | None = typer.Option(
+        None, "--description", "-d", help="Secret description (stored as metadata)"
+    ),
     gen: bool = typer.Option(False, "--generate", "-g", help="Generate a random value"),
 ):
     """Create or update a secret."""
@@ -214,7 +223,9 @@ def set(
             "[red]Error:[/red] Cannot use --generate with an explicit value"
         )
         raise typer.Exit(1)
-    if not gen and value is None:
+
+    metadata_only = value is None and not gen
+    if metadata_only and description is None and note is None:
         err_console.print("[red]Error:[/red] Provide a value or use --generate")
         raise typer.Exit(1)
 
@@ -226,12 +237,29 @@ def set(
 
     existing = find_secret_by_key(client, path)
     if existing:
+        # Fetch existing secret to preserve value/note when doing metadata-only updates
+        existing_response = client.secrets().get(existing["id"])
+        if not existing_response.data:
+            err_console.print("[red]Failed to retrieve existing secret.[/red]")
+            raise typer.Exit(1)
+
+        if metadata_only:
+            value = existing_response.data.value
+
+        # Merge metadata into existing note
+        existing_metadata, existing_body = parse_note(existing_response.data.note)
+        if description is not None:
+            existing_metadata.description = description
+        if note is not None:
+            existing_body = note
+        final_note = render_note(existing_metadata, existing_body)
+
         response = client.secrets().update(
             organization_id=settings.organization_id,
             id=existing["id"],
             key=path,
             value=value,
-            note=note,
+            note=final_note,
             project_ids=None,
         )
         if not response.data:
@@ -239,12 +267,22 @@ def set(
             raise typer.Exit(1)
         console.print(f"[yellow]Updated:[/yellow] {path}")
     else:
+        if metadata_only:
+            err_console.print(
+                "[red]Error:[/red] Secret not found. Provide a value to create it."
+            )
+            raise typer.Exit(1)
+
+        # Build note from scratch for new secrets
+        metadata = SecretMetadata(description=description)
+        final_note = render_note(metadata, note or "")
+
         project_id = get_or_create_project(client, DEFAULT_PROJECT_NAME)
         response = client.secrets().create(
             organization_id=settings.organization_id,
             key=path,
             value=value,
-            note=note,
+            note=final_note,
             project_ids=[project_id],
         )
         if not response.data:

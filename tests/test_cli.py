@@ -302,6 +302,153 @@ class TestSetGenerate:
         assert result.exit_code != 0
 
 
+class TestSetDescription:
+    @patch("vaultuner.cli.get_or_create_project")
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_creates_with_description(
+        self, mock_settings, mock_client, mock_find, mock_project
+    ):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = None
+        mock_project.return_value = "project-id"
+        client = MagicMock()
+        client.secrets().create.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(
+            app,
+            ["set", "myproject/api-key", "secret-value", "--description", "My API key"],
+        )
+        assert result.exit_code == 0
+        call_args = client.secrets().create.call_args
+        note = call_args.kwargs.get("note") or call_args[1].get("note")
+        assert "description: My API key" in note
+        assert "---" in note
+
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_updates_description_preserves_body(
+        self, mock_settings, mock_client, mock_find
+    ):
+        """Updating description on a secret with an existing plain note preserves the note as body."""
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = {"id": "secret-id", "key": "myproject/api-key"}
+        client = MagicMock()
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(
+                key="myproject/api-key",
+                value="existing-value",
+                note="Existing plain note.",
+                project_id="proj-id",
+            )
+        )
+        client.secrets().update.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(
+            app,
+            [
+                "set",
+                "myproject/api-key",
+                "new-value",
+                "--description",
+                "Added description",
+            ],
+        )
+        assert result.exit_code == 0
+        call_args = client.secrets().update.call_args
+        note = call_args.kwargs.get("note") or call_args[1].get("note")
+        assert "description: Added description" in note
+        assert "Existing plain note." in note
+
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_metadata_only_update(self, mock_settings, mock_client, mock_find):
+        """Update just metadata without changing the secret value."""
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = {"id": "secret-id", "key": "myproject/api-key"}
+        client = MagicMock()
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(
+                key="myproject/api-key",
+                value="keep-this-value",
+                note=None,
+                project_id="proj-id",
+            )
+        )
+        client.secrets().update.return_value = MagicMock(data=MagicMock())
+        mock_client.return_value = client
+
+        result = runner.invoke(
+            app,
+            ["set", "myproject/api-key", "--description", "Just adding metadata"],
+        )
+        assert result.exit_code == 0
+        call_args = client.secrets().update.call_args
+        value = call_args.kwargs.get("value") or call_args[1].get("value")
+        note = call_args.kwargs.get("note") or call_args[1].get("note")
+        assert value == "keep-this-value"
+        assert "description: Just adding metadata" in note
+
+    @patch("vaultuner.cli.find_secret_by_key")
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_metadata_only_update_not_found(self, mock_settings, mock_client, mock_find):
+        """Cannot update metadata on a secret that doesn't exist without providing a value."""
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+        mock_find.return_value = None
+        mock_client.return_value = MagicMock()
+
+        result = runner.invoke(
+            app,
+            ["set", "myproject/api-key", "--description", "No value provided"],
+        )
+        assert result.exit_code != 0
+
+
+class TestGetDescription:
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.find_secret_by_key")
+    def test_displays_description_and_note_body(self, mock_find, mock_client):
+        mock_find.return_value = {"id": "secret-id", "key": "myproject/api-key"}
+        client = MagicMock()
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(
+                key="myproject/api-key",
+                value="secret-value",
+                note="---\ndescription: My API key\n---\nSome extra note.",
+            )
+        )
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["get", "myproject/api-key"])
+        assert result.exit_code == 0
+        assert "My API key" in result.stdout
+        assert "Some extra note." in result.stdout
+
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.find_secret_by_key")
+    def test_displays_plain_note_without_frontmatter(self, mock_find, mock_client):
+        mock_find.return_value = {"id": "secret-id", "key": "myproject/api-key"}
+        client = MagicMock()
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(
+                key="myproject/api-key",
+                value="secret-value",
+                note="Just a plain note.",
+            )
+        )
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["get", "myproject/api-key"])
+        assert result.exit_code == 0
+        assert "Just a plain note." in result.stdout
+
+
 class TestDeleteSecret:
     @patch("vaultuner.cli.find_secret_by_key")
     @patch("vaultuner.cli.get_client")
