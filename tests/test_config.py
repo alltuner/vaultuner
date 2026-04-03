@@ -9,6 +9,7 @@ from vaultuner.config import (
     SERVICE_NAME,
     delete_keyring_value,
     get_keyring_value,
+    is_keyring_accessible,
     set_keyring_value,
 )
 
@@ -25,6 +26,14 @@ class TestGetKeyringValue:
     def test_returns_none_when_missing(self, mock_get):
         mock_get.return_value = None
         result = get_keyring_value("missing_key")
+        assert result is None
+
+    @patch("vaultuner.config.keyring.get_password")
+    def test_returns_none_when_keyring_inaccessible(self, mock_get):
+        import keyring.errors
+
+        mock_get.side_effect = keyring.errors.KeyringError("(-25308, 'Unknown Error')")
+        result = get_keyring_value("test_key")
         assert result is None
 
 
@@ -47,6 +56,24 @@ class TestDeleteKeyringValue:
 
         mock_delete.side_effect = keyring.errors.PasswordDeleteError()
         delete_keyring_value("missing_key")
+
+
+class TestIsKeyringAccessible:
+    @patch("vaultuner.config.keyring.get_password")
+    def test_returns_true_when_accessible(self, mock_get):
+        mock_get.return_value = None
+        assert is_keyring_accessible() is True
+
+    @patch("vaultuner.config.keyring.get_password")
+    def test_returns_false_when_keyring_error(self, mock_get):
+        import keyring.errors
+
+        mock_get.side_effect = keyring.errors.KeyringError("(-25308, 'Unknown Error')")
+        assert is_keyring_accessible() is False
+
+    @patch("vaultuner.config.sys.platform", "linux")
+    def test_returns_false_on_non_darwin(self):
+        assert is_keyring_accessible() is False
 
 
 class TestPlatformCheck:
