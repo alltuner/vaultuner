@@ -41,10 +41,13 @@ DB_PASS=$(vaultuner get myapp/prod/db-password -v)
 Without `--value`:
 
 ```
-Path   myapp/api-key
-Value  sk-test-abc123
-Note   API key for external service
+Path         myapp/api-key
+Value        sk-test-abc123
+Description  API key for external service
+Note         Rotated quarterly
 ```
+
+The `Description` row appears when the secret has [metadata](../concepts/metadata.md). The `Note` row shows any free-text note content.
 
 With `--value`:
 

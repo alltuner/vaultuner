@@ -1,9 +1,9 @@
 # ABOUTME: Tests for the models module.
-# ABOUTME: Tests SecretPath parsing and key generation.
+# ABOUTME: Tests SecretPath parsing, key generation, and note metadata.
 
 import pytest
 
-from vaultuner.models import SecretPath
+from vaultuner.models import SecretMetadata, SecretPath, parse_note, render_note
 
 
 class TestSecretPathParse:
@@ -114,3 +114,118 @@ class TestDeletedHelpers:
         from vaultuner.models import DELETED_PREFIX
 
         assert DELETED_PREFIX == "_deleted_/"
+
+
+class TestSecretMetadata:
+    def test_all_fields_optional(self):
+        meta = SecretMetadata()
+        assert meta.description is None
+
+    def test_description(self):
+        meta = SecretMetadata(description="A secret")
+        assert meta.description == "A secret"
+
+    def test_unknown_fields_ignored(self):
+        meta = SecretMetadata(owner="team-x", rotated="2026-01-01")
+        assert not hasattr(meta, "owner")
+        assert meta.description is None
+
+
+class TestParseNote:
+    def test_none_note(self):
+        meta, body = parse_note(None)
+        assert meta == SecretMetadata()
+        assert body == ""
+
+    def test_empty_note(self):
+        meta, body = parse_note("")
+        assert meta == SecretMetadata()
+        assert body == ""
+
+    def test_plain_text_no_frontmatter(self):
+        meta, body = parse_note("Just a plain note.")
+        assert meta == SecretMetadata()
+        assert body == "Just a plain note."
+
+    def test_multiline_plain_text(self):
+        note = "Line one.\nLine two.\nLine three."
+        meta, body = parse_note(note)
+        assert meta == SecretMetadata()
+        assert body == note
+
+    def test_frontmatter_only(self):
+        note = "---\ndescription: My secret\n---"
+        meta, body = parse_note(note)
+        assert meta.description == "My secret"
+        assert body == ""
+
+    def test_frontmatter_with_body(self):
+        note = "---\ndescription: My secret\n---\nSome extra info."
+        meta, body = parse_note(note)
+        assert meta.description == "My secret"
+        assert body == "Some extra info."
+
+    def test_frontmatter_with_multiline_body(self):
+        note = "---\ndescription: My secret\n---\nLine one.\nLine two."
+        meta, body = parse_note(note)
+        assert meta.description == "My secret"
+        assert body == "Line one.\nLine two."
+
+    def test_frontmatter_unknown_fields_ignored(self):
+        note = "---\ndescription: My secret\nowner: team-x\n---\nBody."
+        meta, body = parse_note(note)
+        assert meta.description == "My secret"
+        assert body == "Body."
+
+    def test_dashes_in_body_not_treated_as_frontmatter(self):
+        note = "Some text with\n---\ndashes in it."
+        meta, body = parse_note(note)
+        assert meta == SecretMetadata()
+        assert body == note
+
+    def test_frontmatter_with_trailing_newline(self):
+        note = "---\ndescription: My secret\n---\n"
+        meta, body = parse_note(note)
+        assert meta.description == "My secret"
+        assert body == ""
+
+
+class TestRenderNote:
+    def test_empty_metadata_no_body(self):
+        result = render_note(SecretMetadata(), "")
+        assert result is None
+
+    def test_empty_metadata_with_body(self):
+        result = render_note(SecretMetadata(), "Just a note.")
+        assert result == "Just a note."
+
+    def test_metadata_no_body(self):
+        result = render_note(SecretMetadata(description="My secret"), "")
+        assert result == "---\ndescription: My secret\n---"
+
+    def test_metadata_with_body(self):
+        result = render_note(SecretMetadata(description="My secret"), "Extra info.")
+        assert result == "---\ndescription: My secret\n---\nExtra info."
+
+    def test_roundtrip_plain_text(self):
+        original = "Just a plain note."
+        meta, body = parse_note(original)
+        assert render_note(meta, body) == original
+
+    def test_roundtrip_with_frontmatter(self):
+        original = "---\ndescription: My secret\n---\nSome body text."
+        meta, body = parse_note(original)
+        assert render_note(meta, body) == original
+
+    def test_roundtrip_frontmatter_only(self):
+        original = "---\ndescription: My secret\n---"
+        meta, body = parse_note(original)
+        assert render_note(meta, body) == original
+
+    def test_adding_frontmatter_preserves_body(self):
+        """Existing note content becomes the body when adding metadata."""
+        original = "This was the original note."
+        meta, body = parse_note(original)
+        meta.description = "Now with metadata"
+        result = render_note(meta, body)
+        assert result == "---\ndescription: Now with metadata\n---\nThis was the original note."
