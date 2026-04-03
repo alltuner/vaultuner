@@ -16,6 +16,7 @@ from vaultuner.config import (
     delete_keyring_value,
     get_keyring_value,
     get_settings,
+    is_keyring_accessible,
     set_keyring_value,
 )
 from vaultuner.models import (
@@ -78,6 +79,15 @@ def config_show():
     table = Table(show_header=True, header_style="bold")
     table.add_column("Setting", style="cyan")
     table.add_column("Status")
+
+    keyring_available = is_keyring_accessible()
+
+    if not keyring_available:
+        console.print(
+            "[yellow]Warning:[/yellow] Keychain is not accessible. "
+            "Run this command from a regular (non-remote) shell to manage keychain credentials.\n"
+            "You can still use environment variables BWS_ACCESS_TOKEN and BWS_ORGANIZATION_ID.\n"
+        )
 
     access_token = get_keyring_value(KEYRING_MAP["access-token"])
     org_id = get_keyring_value(KEYRING_MAP["organization-id"])

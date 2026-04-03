@@ -20,6 +20,17 @@ def _require_darwin() -> None:
         )
 
 
+def is_keyring_accessible() -> bool:
+    """Check whether the system keychain can be reached."""
+    if sys.platform != "darwin":
+        return False
+    try:
+        keyring.get_password(SERVICE_NAME, "__probe__")
+        return True
+    except keyring.errors.KeyringError:
+        return False
+
+
 def get_keyring_value(key: str) -> str | None:
     """Get a value from the system keychain. Returns None on non-darwin or if inaccessible."""
     if sys.platform != "darwin":

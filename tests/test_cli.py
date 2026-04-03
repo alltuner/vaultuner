@@ -91,6 +91,16 @@ class TestConfigShow:
         assert "some-org-uuid-12345" not in result.stdout
         assert "configured" in result.stdout
 
+    @patch("vaultuner.cli.is_keyring_accessible")
+    @patch("vaultuner.cli.get_keyring_value")
+    def test_warns_when_keyring_inaccessible(self, mock_get, mock_accessible):
+        mock_accessible.return_value = False
+        mock_get.return_value = None
+        result = runner.invoke(app, ["config", "show"])
+        assert result.exit_code == 0
+        assert "keychain is not accessible" in result.stdout.lower()
+        assert "regular" in result.stdout.lower()
+
 
 class TestConfigDelete:
     @patch("vaultuner.cli.delete_keyring_value")
