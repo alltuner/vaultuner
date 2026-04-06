@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.13](https://github.com/alltuner/vaultuner/compare/v0.1.12...v0.1.13) (2026-04-06)
+
+
+### Features
+
+* secret metadata via YAML frontmatter in notes ([#50](https://github.com/alltuner/vaultuner/issues/50)) ([6c28c8f](https://github.com/alltuner/vaultuner/commit/6c28c8fb5ef3f2c140d85302b1feb488c43efb53))
+* support @org/repo scoped secret paths ([#51](https://github.com/alltuner/vaultuner/issues/51)) ([b3f3e8e](https://github.com/alltuner/vaultuner/commit/b3f3e8e09beafdd8d3605e718cc81fbe497758c7))
+
+
+### Bug Fixes
+
+* remove deprecated license classifier from pyproject.toml ([#48](https://github.com/alltuner/vaultuner/issues/48)) ([1c8fb39](https://github.com/alltuner/vaultuner/commit/1c8fb39a31add93442e4ad9cf1cec2dbc6ba3668))
+
 ## [0.1.12](https://github.com/alltuner/vaultuner/compare/v0.1.11...v0.1.12) (2026-04-03)
 
 
