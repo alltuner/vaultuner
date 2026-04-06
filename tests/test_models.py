@@ -54,6 +54,60 @@ class TestSecretPathParse:
         assert path.name == "api-key_v2"
 
 
+class TestSecretPathParseScoped:
+    """Tests for @org/repo scoped paths."""
+
+    def test_parse_at_org_repo_name(self):
+        path = SecretPath.parse("@dpoblador/vaultuner/api-key")
+        assert path.project == "@dpoblador/vaultuner"
+        assert path.env is None
+        assert path.name == "api-key"
+
+    def test_parse_at_org_repo_env_name(self):
+        path = SecretPath.parse("@dpoblador/vaultuner/prod/api-key")
+        assert path.project == "@dpoblador/vaultuner"
+        assert path.env == "prod"
+        assert path.name == "api-key"
+
+    def test_parse_at_org_repo_only_raises(self):
+        with pytest.raises(ValueError, match="Invalid path format"):
+            SecretPath.parse("@dpoblador/vaultuner")
+
+    def test_parse_at_org_only_raises(self):
+        with pytest.raises(ValueError, match="Invalid path format"):
+            SecretPath.parse("@dpoblador")
+
+    def test_parse_at_five_parts_raises(self):
+        with pytest.raises(ValueError, match="Invalid path format"):
+            SecretPath.parse("@dpoblador/vaultuner/prod/api-key/extra")
+
+    def test_parse_at_empty_org_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("@/repo/name")
+
+    def test_parse_at_empty_repo_raises(self):
+        with pytest.raises(ValueError, match="cannot be empty"):
+            SecretPath.parse("@org//name")
+
+    def test_to_key_roundtrip_without_env(self):
+        path = SecretPath.parse("@dpoblador/vaultuner/api-key")
+        assert path.to_key() == "@dpoblador/vaultuner/api-key"
+
+    def test_to_key_roundtrip_with_env(self):
+        path = SecretPath.parse("@dpoblador/vaultuner/prod/api-key")
+        assert path.to_key() == "@dpoblador/vaultuner/prod/api-key"
+
+    def test_str_delegates_to_to_key(self):
+        path = SecretPath(project="@dpoblador/vaultuner", env="staging", name="key")
+        assert str(path) == "@dpoblador/vaultuner/staging/key"
+
+    def test_special_chars_in_org_repo(self):
+        path = SecretPath.parse("@my-org/my_repo.v2/prod/secret")
+        assert path.project == "@my-org/my_repo.v2"
+        assert path.env == "prod"
+        assert path.name == "secret"
+
+
 class TestSecretPathToKey:
     def test_to_key_with_env(self):
         path = SecretPath(project="proj", env="prod", name="secret")

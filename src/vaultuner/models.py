@@ -1,5 +1,5 @@
 # ABOUTME: Data models for vaultuner.
-# ABOUTME: SecretPath, SecretMetadata, and note frontmatter parsing.
+# ABOUTME: SecretPath (plain and @org/repo scoped), SecretMetadata, and note frontmatter parsing.
 
 from pydantic import BaseModel, ConfigDict
 
@@ -30,7 +30,7 @@ class SecretPath(BaseModel):
 
     @classmethod
     def parse(cls, path: str) -> "SecretPath":
-        """Parse a path like 'project/env/name' or 'project/name'."""
+        """Parse a path like 'project/env/name' or '@org/repo/env/name'."""
         parts = path.split("/")
 
         if any(not part for part in parts):
@@ -38,14 +38,31 @@ class SecretPath(BaseModel):
                 f"Invalid path format: {path}. Path segments cannot be empty."
             )
 
-        if len(parts) == 3:
-            return cls(project=parts[0], env=parts[1], name=parts[2])
-        elif len(parts) == 2:
-            return cls(project=parts[0], name=parts[1])
-        else:
+        is_scoped = parts[0].startswith("@")
+
+        if is_scoped and len(parts[0]) == 1:
             raise ValueError(
-                f"Invalid path format: {path}. Expected PROJECT/[ENV/]NAME"
+                f"Invalid path format: {path}. Path segments cannot be empty."
             )
+
+        if is_scoped:
+            if len(parts) == 4:
+                return cls(project=f"{parts[0]}/{parts[1]}", env=parts[2], name=parts[3])
+            elif len(parts) == 3:
+                return cls(project=f"{parts[0]}/{parts[1]}", name=parts[2])
+            else:
+                raise ValueError(
+                    f"Invalid path format: {path}. Expected @ORG/REPO/[ENV/]NAME"
+                )
+        else:
+            if len(parts) == 3:
+                return cls(project=parts[0], env=parts[1], name=parts[2])
+            elif len(parts) == 2:
+                return cls(project=parts[0], name=parts[1])
+            else:
+                raise ValueError(
+                    f"Invalid path format: {path}. Expected PROJECT/[ENV/]NAME"
+                )
 
     def to_key(self) -> str:
         """Convert to Bitwarden secret key format."""

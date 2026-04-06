@@ -1,6 +1,7 @@
 # ABOUTME: Typer CLI for Bitwarden Secrets Manager.
 # ABOUTME: Commands for listing, getting, setting, and deleting secrets.
 
+import builtins
 from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated, Literal
@@ -39,7 +40,7 @@ def version_callback(value: bool) -> None:
 
 
 app = typer.Typer(
-    help=f"Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET naming. (v{__version__})",
+    help=f"Bitwarden Secrets Manager CLI with PROJECT/[ENV/]SECRET and @ORG/REPO/[ENV/]SECRET naming. (v{__version__})",
     no_args_is_help=True,
 )
 config_app = typer.Typer(help="Manage vaultuner credentials stored in system keychain.")
@@ -174,7 +175,7 @@ def list_secrets(
 
 @app.command()
 def get(
-    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
+    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME or @ORG/REPO/[ENV/]NAME"),
     value_only: bool = typer.Option(
         False, "--value", "-v", help="Print only the value"
     ),
@@ -209,7 +210,7 @@ def get(
 
 @app.command()
 def set(
-    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
+    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME or @ORG/REPO/[ENV/]NAME"),
     value: str | None = typer.Argument(None, help="Secret value"),
     note: str | None = typer.Option(None, "--note", "-n", help="Optional note"),
     description: str | None = typer.Option(
@@ -296,7 +297,7 @@ def set(
 
 @app.command()
 def delete(
-    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
+    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME or @ORG/REPO/[ENV/]NAME"),
     force: bool = typer.Option(False, "--force", "-f", help="Skip confirmation"),
     permanent: bool = typer.Option(False, "--permanent", help="Permanently delete"),
 ):
@@ -340,7 +341,7 @@ def delete(
 
 @app.command()
 def restore(
-    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME"),
+    path: str = typer.Argument(..., help="Secret path: PROJECT/[ENV/]NAME or @ORG/REPO/[ENV/]NAME"),
 ):
     """Restore a soft-deleted secret."""
     settings = get_settings()
@@ -370,19 +371,33 @@ def restore(
 
 @app.command()
 def projects():
-    """List all projects."""
+    """List all projects (derived from secret names)."""
     settings = get_settings()
     client = get_client()
-    response = client.projects().list(settings.organization_id)
+    response = client.secrets().list(settings.organization_id)
     if not response.data or not response.data.data:
+        console.print("[dim]No projects found.[/dim]")
+        return
+
+    project_names: builtins.set[str] = builtins.set()
+    for secret in response.data.data:
+        if is_deleted(secret.key):
+            continue
+        try:
+            path = SecretPath.parse(secret.key)
+        except ValueError:
+            continue
+        project_names.add(path.project)
+
+    if not project_names:
         console.print("[dim]No projects found.[/dim]")
         return
 
     table = Table(show_header=True, header_style="bold")
     table.add_column("Project", style="cyan")
 
-    for project in response.data.data:
-        table.add_row(project.name)
+    for name in sorted(project_names):
+        table.add_row(name)
 
     console.print(table)
 
