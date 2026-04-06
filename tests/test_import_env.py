@@ -98,3 +98,15 @@ class TestBuildSecretPath:
 
     def test_with_empty_env(self):
         assert build_secret_path("proj", "", "key") == "proj/key"
+
+    def test_scoped_project_with_env(self):
+        assert (
+            build_secret_path("@dpoblador/vaultuner", "prod", "api-key")
+            == "@dpoblador/vaultuner/prod/api-key"
+        )
+
+    def test_scoped_project_without_env(self):
+        assert (
+            build_secret_path("@dpoblador/vaultuner", None, "api-key")
+            == "@dpoblador/vaultuner/api-key"
+        )

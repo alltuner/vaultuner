@@ -148,6 +148,27 @@ class TestListSecrets:
 
     @patch("vaultuner.cli.get_client")
     @patch("vaultuner.cli.get_settings")
+    def test_filters_by_scoped_project(self, mock_settings, mock_client):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secrets = [
+            MagicMock(key="@dpoblador/vaultuner/prod/api-key"),
+            MagicMock(key="@dpoblador/vaultuner/dev/db-pass"),
+            MagicMock(key="myproject/api-key"),
+        ]
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(
+            data=MagicMock(data=secrets)
+        )
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["list", "-p", "@dpoblador/vaultuner"])
+        assert result.exit_code == 0
+        assert "@dpoblador/vaultuner" in result.stdout
+        assert "myproject" not in result.stdout
+
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
     def test_empty_response(self, mock_settings, mock_client):
         mock_settings.return_value = MagicMock(organization_id="org-123")
         client = MagicMock()
@@ -534,24 +555,85 @@ class TestRestoreSecret:
 class TestProjects:
     @patch("vaultuner.cli.get_client")
     @patch("vaultuner.cli.get_settings")
-    def test_lists_projects(self, mock_settings, mock_client):
+    def test_lists_semantic_projects(self, mock_settings, mock_client):
         mock_settings.return_value = MagicMock(organization_id="org-123")
-        project = MagicMock()
-        project.name = "myproject"
+
+        secrets = [
+            MagicMock(key="myproject/api-key"),
+            MagicMock(key="myproject/prod/db-pass"),
+            MagicMock(key="other/secret"),
+        ]
         client = MagicMock()
-        client.projects().list.return_value = MagicMock(data=MagicMock(data=[project]))
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=secrets))
         mock_client.return_value = client
 
         result = runner.invoke(app, ["projects"])
         assert result.exit_code == 0
         assert "myproject" in result.output
+        assert "other" in result.output
+
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_lists_scoped_projects(self, mock_settings, mock_client):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secrets = [
+            MagicMock(key="@dpoblador/vaultuner/prod/api-key"),
+            MagicMock(key="@dpoblador/vaultuner/dev/api-key"),
+            MagicMock(key="myproject/api-key"),
+        ]
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=secrets))
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["projects"])
+        assert result.exit_code == 0
+        assert "@dpoblador/vaultuner" in result.output
+        assert "myproject" in result.output
+
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_deduplicates_projects(self, mock_settings, mock_client):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secrets = [
+            MagicMock(key="myproject/api-key"),
+            MagicMock(key="myproject/prod/db-pass"),
+            MagicMock(key="myproject/dev/db-pass"),
+        ]
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=secrets))
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["projects"])
+        assert result.exit_code == 0
+        # Should appear once, not three times
+        assert result.output.count("myproject") == 1
+
+    @patch("vaultuner.cli.get_client")
+    @patch("vaultuner.cli.get_settings")
+    def test_ignores_deleted_secrets(self, mock_settings, mock_client):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secrets = [
+            MagicMock(key="myproject/api-key"),
+            MagicMock(key="_deleted_/oldproject/secret"),
+        ]
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(data=MagicMock(data=secrets))
+        mock_client.return_value = client
+
+        result = runner.invoke(app, ["projects"])
+        assert result.exit_code == 0
+        assert "myproject" in result.output
+        assert "oldproject" not in result.output
 
     @patch("vaultuner.cli.get_client")
     @patch("vaultuner.cli.get_settings")
     def test_empty(self, mock_settings, mock_client):
         mock_settings.return_value = MagicMock(organization_id="org-123")
         client = MagicMock()
-        client.projects().list.return_value = MagicMock(data=None)
+        client.secrets().list.return_value = MagicMock(data=None)
         mock_client.return_value = client
 
         result = runner.invoke(app, ["projects"])

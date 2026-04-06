@@ -239,3 +239,27 @@ class TestExportSecrets:
         content = output.read_text()
         # Quotes should be escaped so the .env file is valid
         assert r'QUOTED_VAL="value with \"quotes\" inside"' in content
+
+    @patch("vaultuner.export.get_client")
+    @patch("vaultuner.export.get_settings")
+    def test_filters_by_scoped_project(self, mock_settings, mock_client, tmp_path):
+        mock_settings.return_value = MagicMock(organization_id="org-123")
+
+        secret1 = MagicMock(id="1", key="@dpoblador/vaultuner/prod/api-key")
+        secret2 = MagicMock(id="2", key="myproject/api-key")
+
+        client = MagicMock()
+        client.secrets().list.return_value = MagicMock(
+            data=MagicMock(data=[secret1, secret2])
+        )
+        client.secrets().get.return_value = MagicMock(
+            data=MagicMock(value="scoped-secret")
+        )
+        mock_client.return_value = client
+
+        output = tmp_path / ".env"
+        added, skipped = export_secrets("@dpoblador/vaultuner", output, env="prod")
+
+        assert added == 1
+        assert skipped == 0
+        assert 'API_KEY="scoped-secret"' in output.read_text()
