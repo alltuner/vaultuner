@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.1.13](https://github.com/alltuner/vaultuner/compare/v0.1.12...v0.1.13) (2026-05-03)
+
+
+### Features
+
+* secret metadata via YAML frontmatter in notes ([#50](https://github.com/alltuner/vaultuner/issues/50)) ([6c28c8f](https://github.com/alltuner/vaultuner/commit/6c28c8fb5ef3f2c140d85302b1feb488c43efb53))
+* support @org/repo scoped secret paths ([#51](https://github.com/alltuner/vaultuner/issues/51)) ([b3f3e8e](https://github.com/alltuner/vaultuner/commit/b3f3e8e09beafdd8d3605e718cc81fbe497758c7))
+
+
+### Bug Fixes
+
+* remove deprecated license classifier from pyproject.toml ([#48](https://github.com/alltuner/vaultuner/issues/48)) ([1c8fb39](https://github.com/alltuner/vaultuner/commit/1c8fb39a31add93442e4ad9cf1cec2dbc6ba3668))
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/upload-pages-artifact action to v5 ([#52](https://github.com/alltuner/vaultuner/issues/52)) ([9881332](https://github.com/alltuner/vaultuner/commit/98813329ea7568be91d21610b4680283f1b17661))
+* **deps:** update astral-sh/setup-uv action to v8 ([#53](https://github.com/alltuner/vaultuner/issues/53)) ([f7a19c4](https://github.com/alltuner/vaultuner/commit/f7a19c4bc16196e29794c6fd17420460f16f1b52))
+* **deps:** update googleapis/release-please-action action to v5 ([#55](https://github.com/alltuner/vaultuner/issues/55)) ([12ada0f](https://github.com/alltuner/vaultuner/commit/12ada0f85ad441ed0b7f8fa544c7672930a4b595))
+
+
+### CI/CD Changes
+
+* allow revert as a conventional PR title type ([#58](https://github.com/alltuner/vaultuner/issues/58)) ([0f2ecfe](https://github.com/alltuner/vaultuner/commit/0f2ecfe07e160033e205697333d7c3d7edc2e4df))
+* validate PR titles as conventional commits ([#57](https://github.com/alltuner/vaultuner/issues/57)) ([c887ac8](https://github.com/alltuner/vaultuner/commit/c887ac8bfa2310efb10701285151ce29e20ba09f))
+
 ## [0.1.12](https://github.com/alltuner/vaultuner/compare/v0.1.11...v0.1.12) (2026-04-03)
 
 
