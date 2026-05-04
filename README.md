@@ -118,15 +118,15 @@ myapp/dev/db-password    # Development only
 
 Full docs at [vaultuner.alltuner.com](https://vaultuner.alltuner.com).
 
+## License
+
+[MIT](LICENSE)
+
 ## Support the project
 
 vaultuner is an open source project built by [David Poblador i Garcia](https://davidpoblador.com/) through [All Tuner Labs](https://www.alltuner.com/).
 
 If this project was useful to you, [consider supporting its development](https://alltuner.com/sponsor).
-
-## License
-
-[MIT](LICENSE)
 
 ---
 
