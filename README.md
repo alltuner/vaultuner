@@ -1,4 +1,6 @@
-<h1 align="center">vaultuner</h1>
+<p align="center">
+  <img src="https://brand.alltuner.com/logos/vaultuner/horizontal.png" alt="vaultuner" width="500">
+</p>
 
 <p align="center">
   <strong>Human-readable secrets for Bitwarden Secrets Manager.</strong><br>
