@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/alltuner/vaultuner/compare/v0.1.13...v0.1.14) (2026-05-04)
+
+
+### Documentation Updates
+
+* standardize README to alltuner brand structure ([#59](https://github.com/alltuner/vaultuner/issues/59)) ([f1e22eb](https://github.com/alltuner/vaultuner/commit/f1e22ebb13c5ee7554914c2bd14ac5845719e83b))
+
 ## [0.1.13](https://github.com/alltuner/vaultuner/compare/v0.1.12...v0.1.13) (2026-05-03)
 
 
