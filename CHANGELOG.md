@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.14](https://github.com/alltuner/vaultuner/compare/v0.1.13...v0.1.14) (2026-08-21)
+
+
+### Features
+
+* **site:** publish through the fleet's registry instead of GitHub Pages ([#67](https://github.com/alltuner/vaultuner/issues/67)) ([3d21dcf](https://github.com/alltuner/vaultuner/commit/3d21dcfe82792141c74ae074a805ad437d790e62))
+
+
+### Miscellaneous Chores
+
+* drop the GitHub Pages workflow ([#68](https://github.com/alltuner/vaultuner/issues/68)) ([fd63b5b](https://github.com/alltuner/vaultuner/commit/fd63b5bfb2279fdbf0c449206a5e098c2a69dbb6))
+* remove the inert GitHub Pages CNAME ([#69](https://github.com/alltuner/vaultuner/issues/69)) ([354154f](https://github.com/alltuner/vaultuner/commit/354154fc97481dde250c8c43cf035d75ce027e59))
+
+
+### Documentation Updates
+
+* standardize README to alltuner brand structure ([#59](https://github.com/alltuner/vaultuner/issues/59)) ([f1e22eb](https://github.com/alltuner/vaultuner/commit/f1e22ebb13c5ee7554914c2bd14ac5845719e83b))
+
 ## [0.1.13](https://github.com/alltuner/vaultuner/compare/v0.1.12...v0.1.13) (2026-05-03)
 
 
