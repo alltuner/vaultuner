@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://vaultuner.alltuner.com">Docs</a> &middot;
-  <a href="https://alltuner.com/sponsor">Sponsor</a>
+  <a href="https://alltuner.com/sponsor/">Sponsor</a>
 </p>
 
 <p align="center">
@@ -128,7 +128,7 @@ Full docs at [vaultuner.alltuner.com](https://vaultuner.alltuner.com).
 
 vaultuner is an open source project built by [David Poblador i Garcia](https://davidpoblador.com/) through [All Tuner Labs](https://www.alltuner.com/).
 
-If this project was useful to you, [consider supporting its development](https://alltuner.com/sponsor).
+If this project was useful to you, [consider supporting its development](https://alltuner.com/sponsor/).
 
 ---
 
