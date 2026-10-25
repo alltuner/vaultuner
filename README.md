@@ -116,6 +116,16 @@ myapp/dev/db-password    # Development only
 - macOS (Keychain integration)
 - Bitwarden Secrets Manager account
 
+## Development
+
+The maintainers' development credentials (`BWS_ACCESS_TOKEN`, `BWS_ORGANIZATION_ID`) are age-encrypted in `fnox.toml`. With [fnox](https://fnox.jdx.dev)'s shell hook active they load on `cd`; otherwise wrap the command:
+
+```bash
+fnox exec -- uv run vaultuner list
+```
+
+Credentials in the Keychain take precedence over these environment variables.
+
 ## Documentation
 
 Full docs at [vaultuner.alltuner.com](https://vaultuner.alltuner.com).
