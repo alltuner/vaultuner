@@ -19,3 +19,5 @@ wheels/
 
 # MkDocs
 site/
+
+.wrangler/
